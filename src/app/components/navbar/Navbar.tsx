@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Aperture } from "lucide-react";
 import { usePathname } from "next/navigation";
 import UserInfo from "./UserInfo";
+import ThemeToggle from "../theme/ThemeToggle";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -71,7 +72,8 @@ const Navbar = () => {
         </nav>
 
         {/* Authentication / user menu */}
-        <div className="flex shrink-0 items-center">
+        <div className="flex shrink-0 items-center gap-2">
+          <ThemeToggle/>
           <UserInfo />
         </div>
       </div>
