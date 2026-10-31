@@ -1,4 +1,3 @@
-
 "use client";
 
 import { authClient } from "@/lib/auth-client";
@@ -54,7 +53,6 @@ const SignInPage = () => {
     }
   };
 
-  // Google sign-in
   const handleGoogleLogin = async () => {
     try {
       const { error } = await authClient.signIn.social({
@@ -70,7 +68,6 @@ const SignInPage = () => {
     }
   };
 
-  // GitHub sign-in
   const handleGithubLogin = async () => {
     try {
       const { error } = await authClient.signIn.social({
@@ -87,7 +84,7 @@ const SignInPage = () => {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-10">
+    <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-10 text-gray-900 transition-colors duration-300 dark:bg-neutral-950 dark:text-neutral-100">
       <div className="w-full max-w-md">
         {/* StudioSpace branding */}
         <div className="mb-7 text-center">
@@ -97,32 +94,32 @@ const SignInPage = () => {
             className="mb-5 inline-flex items-center justify-center gap-2"
             aria-label="StudioSpace home"
           >
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-600 text-white shadow-lg shadow-violet-200">
+            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-600 text-white shadow-lg shadow-violet-200/60 transition-colors dark:shadow-violet-950/40">
               <Sparkles size={24} />
             </span>
 
-            <span className="text-2xl font-bold tracking-tight text-gray-900">
-              Studio<span className="text-violet-600">Space</span>
+            <span className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+              Studio<span className="text-violet-600 dark:text-violet-400">Space</span>
             </span>
           </button>
 
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
             Welcome back
           </h1>
 
-          <p className="mt-2 text-sm leading-6 text-gray-500">
+          <p className="mt-2 text-sm leading-6 text-gray-500 dark:text-neutral-400">
             Sign in to discover creative spaces and manage your studio bookings.
           </p>
         </div>
 
         {/* Sign-in card */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-7">
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-colors duration-300 dark:border-neutral-800 dark:bg-neutral-900 sm:p-7">
           <form onSubmit={onSubmit} className="space-y-5">
             {/* Email */}
             <div>
               <label
                 htmlFor="email"
-                className="mb-2 block text-sm font-medium text-gray-700"
+                className="mb-2 block text-sm font-medium text-gray-700 dark:text-neutral-300"
               >
                 Email address
               </label>
@@ -134,7 +131,7 @@ const SignInPage = () => {
                 autoComplete="email"
                 required
                 placeholder="you@example.com"
-                className="h-11 w-full rounded-lg border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-violet-600 focus:ring-2 focus:ring-violet-100"
+                className="h-11 w-full rounded-lg border border-gray-200 bg-white px-4 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-violet-600 focus:ring-2 focus:ring-violet-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-violet-500 dark:focus:ring-violet-500/20"
               />
             </div>
 
@@ -142,7 +139,7 @@ const SignInPage = () => {
             <div>
               <label
                 htmlFor="password"
-                className="mb-2 block text-sm font-medium text-gray-700"
+                className="mb-2 block text-sm font-medium text-gray-700 dark:text-neutral-300"
               >
                 Password
               </label>
@@ -155,14 +152,14 @@ const SignInPage = () => {
                   autoComplete="current-password"
                   required
                   placeholder="Enter your password"
-                  className="h-11 w-full rounded-lg border border-gray-200 bg-white px-4 pr-12 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-violet-600 focus:ring-2 focus:ring-violet-100"
+                  className="h-11 w-full rounded-lg border border-gray-200 bg-white px-4 pr-12 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-violet-600 focus:ring-2 focus:ring-violet-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-violet-500 dark:focus:ring-violet-500/20"
                 />
 
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 transition hover:text-gray-800"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 transition hover:text-gray-800 dark:text-neutral-400 dark:hover:text-white"
                 >
                   {showPassword ? (
                     <EyeOff size={19} />
@@ -177,7 +174,7 @@ const SignInPage = () => {
             {errorMessage && (
               <div
                 role="alert"
-                className="rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600"
+                className="rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300"
               >
                 {errorMessage}
               </div>
@@ -187,7 +184,7 @@ const SignInPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="h-11 w-full rounded-lg bg-violet-600 font-semibold text-white shadow-sm transition duration-200 hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="h-11 w-full rounded-lg bg-violet-600 font-semibold text-white shadow-sm transition duration-200 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60 dark:focus:ring-offset-neutral-900"
             >
               {loading ? "Signing in..." : "Sign in"}
             </button>
@@ -195,9 +192,11 @@ const SignInPage = () => {
 
           {/* Divider */}
           <div className="my-6 flex items-center gap-4">
-            <div className="h-px flex-1 bg-gray-200" />
-            <span className="text-xs text-gray-400">OR CONTINUE WITH</span>
-            <div className="h-px flex-1 bg-gray-200" />
+            <div className="h-px flex-1 bg-gray-200 dark:bg-neutral-700" />
+            <span className="text-xs text-gray-400 dark:text-neutral-500">
+              OR CONTINUE WITH
+            </span>
+            <div className="h-px flex-1 bg-gray-200 dark:bg-neutral-700" />
           </div>
 
           {/* Social sign-in */}
@@ -205,7 +204,7 @@ const SignInPage = () => {
             <button
               type="button"
               onClick={handleGoogleLogin}
-              className="flex h-10 items-center justify-center gap-2 rounded-lg border border-gray-200 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+              className="flex h-10 items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-violet-500/30 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700"
             >
               <span className="text-base font-bold text-blue-500">G</span>
               Google
@@ -214,7 +213,7 @@ const SignInPage = () => {
             <button
               type="button"
               onClick={handleGithubLogin}
-              className="flex h-10 items-center justify-center gap-2 rounded-lg border border-gray-200 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+              className="flex h-10 items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-violet-500/30 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700"
             >
               <svg
                 className="h-4 w-4"
@@ -229,12 +228,12 @@ const SignInPage = () => {
           </div>
 
           {/* Sign-up link */}
-          <p className="mt-6 text-center text-sm text-gray-500">
+          <p className="mt-6 text-center text-sm text-gray-500 dark:text-neutral-400">
             Don&apos;t have an account?{" "}
             <button
               type="button"
               onClick={() => router.push("/signup")}
-              className="font-semibold text-violet-600 hover:text-violet-700"
+              className="font-semibold text-violet-600 transition hover:text-violet-700 dark:text-violet-400 dark:hover:text-violet-300"
             >
               Create an account
             </button>
@@ -245,12 +244,12 @@ const SignInPage = () => {
         <button
           type="button"
           onClick={() => router.push("/")}
-          className="mx-auto mt-5 block text-sm text-gray-400 transition hover:text-gray-600"
+          className="mx-auto mt-5 block text-sm text-gray-400 transition hover:text-gray-600 dark:text-neutral-500 dark:hover:text-neutral-300"
         >
           &larr; Back to StudioSpace
         </button>
 
-        <p className="mt-6 text-center text-xs text-gray-400">
+        <p className="mt-6 text-center text-xs text-gray-400 dark:text-neutral-500">
           Find your space. Create something extraordinary.
         </p>
       </div>
