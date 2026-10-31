@@ -141,12 +141,12 @@ const handleSignout = async () => {
         <div className="flex items-center gap-4">
           
             <Link href="/signin" className="btn btn-ghost text-neutral-700 transition-colors hover:text--700">
-              SignIn
+              SIGN-IN
             </Link>
          
 
             <Link href="/signup" className="btn bg-green-600 px-3 py-1.5 font-semibold text-white transition-colors hover:bg-green-700 rounded-xl">
-              SignOut
+              SIGN-UP
             </Link>
           
         </div>
