@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -24,8 +23,15 @@ const Navbar = () => {
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
+  const getNavClass = (active: boolean) =>
+    `relative shrink-0 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-200 ${
+      active
+        ? "bg-violet-50 text-violet-700 dark:bg-violet-500/15 dark:text-violet-300"
+        : "text-neutral-600 hover:bg-neutral-50 hover:text-violet-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-violet-300"
+    }`;
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-neutral-200/80 bg-white/95 shadow-sm backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-neutral-200/80 bg-white/95 shadow-sm backdrop-blur-md transition-colors duration-300 dark:border-neutral-800 dark:bg-neutral-950/95">
       <div className="mx-auto flex min-h-[76px] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link
@@ -33,12 +39,15 @@ const Navbar = () => {
           className="flex shrink-0 items-center gap-2.5"
           aria-label="StudioSpace home"
         >
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-600 text-white shadow-sm shadow-violet-200">
+          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-600 text-white shadow-sm shadow-violet-200 transition-colors dark:shadow-violet-950/40">
             <Aperture size={27} strokeWidth={1.8} />
           </span>
 
-          <span className="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl">
-            Studio<span className="text-violet-600">Space</span>
+          <span className="text-xl font-bold tracking-tight text-neutral-900 transition-colors dark:text-white sm:text-2xl">
+            Studio
+            <span className="text-violet-600 dark:text-violet-400">
+              Space
+            </span>
           </span>
         </Link>
 
@@ -55,25 +64,21 @@ const Navbar = () => {
                 key={link.href}
                 href={link.href}
                 aria-current={active ? "page" : undefined}
-                className={`relative rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                  active
-                    ? "bg-violet-50 text-violet-700"
-                    : "text-neutral-600 hover:bg-neutral-50 hover:text-violet-700"
-                }`}
+                className={getNavClass(active)}
               >
                 {link.label}
 
                 {active && (
-                  <span className="absolute inset-x-3 -bottom-[17px] h-0.5 rounded-full bg-violet-600" />
+                  <span className="absolute inset-x-3 -bottom-[17px] h-0.5 rounded-full bg-violet-600 dark:bg-violet-400" />
                 )}
               </Link>
             );
           })}
         </nav>
 
-        {/* Authentication / user menu */}
+        {/* Theme toggle and authentication / user menu */}
         <div className="flex shrink-0 items-center gap-2">
-          <ThemeToggle/>
+          <ThemeToggle />
           <UserInfo />
         </div>
       </div>
@@ -81,7 +86,7 @@ const Navbar = () => {
       {/* Compact navigation for mobile and tablet */}
       <nav
         aria-label="Mobile navigation"
-        className="flex items-center gap-1 overflow-x-auto border-t border-neutral-100 px-3 py-2 lg:hidden"
+        className="flex items-center gap-1 overflow-x-auto border-t border-neutral-100 px-3 py-2 transition-colors duration-300 dark:border-neutral-800 lg:hidden"
       >
         {navLinks.map((link) => {
           const active = isActive(link.href);
@@ -91,11 +96,7 @@ const Navbar = () => {
               key={link.href}
               href={link.href}
               aria-current={active ? "page" : undefined}
-              className={`shrink-0 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                active
-                  ? "bg-violet-50 text-violet-700"
-                  : "text-neutral-600 hover:bg-neutral-50 hover:text-violet-700"
-              }`}
+              className={getNavClass(active)}
             >
               {link.label}
             </Link>

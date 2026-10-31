@@ -43,6 +43,12 @@ const menuLinks = [
   },
 ];
 
+const loginButtonClass =
+  "inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-semibold text-neutral-700 transition hover:bg-neutral-100 hover:text-violet-700 dark:text-neutral-200 dark:hover:bg-neutral-800 dark:hover:text-violet-300 sm:px-4";
+
+const menuLinkClass =
+  "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-neutral-700 transition hover:bg-violet-50 hover:text-violet-700 dark:text-neutral-200 dark:hover:bg-violet-500/10 dark:hover:text-violet-300";
+
 const UserInfo = () => {
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
@@ -51,7 +57,7 @@ const UserInfo = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  // Close the menu when clicking outside or pressing Escape.
+  // Close the dropdown when clicking outside or pressing Escape.
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -102,18 +108,15 @@ const UserInfo = () => {
   // Unauthenticated state
   if (!user) {
     return (
-      <div className="flex items-center gap-2 sm:gap-3">
-        <Link
-          href="/signin"
-          className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-semibold text-neutral-700 transition hover:bg-neutral-100 hover:text-violet-700 sm:px-4"
-        >
+      <div className="flex items-center gap-1 sm:gap-2">
+        <Link href="/signin" className={loginButtonClass}>
           <LogIn size={17} />
           <span>Login</span>
         </Link>
 
         <Link
           href="/signup"
-          className="inline-flex items-center gap-1.5 rounded-xl bg-violet-600 px-3 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 sm:px-4"
+          className="inline-flex items-center gap-1.5 rounded-xl bg-violet-600 px-3 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-neutral-950 sm:px-4"
         >
           <UserPlus size={17} />
           <span>Register</span>
@@ -138,9 +141,9 @@ const UserInfo = () => {
         aria-expanded={isOpen}
         aria-haspopup="menu"
         aria-label="Open user menu"
-        className="flex items-center gap-2 rounded-full border border-neutral-200 bg-white p-1.5 pr-2 transition hover:border-violet-200 hover:bg-violet-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 sm:gap-2.5 sm:pr-3"
+        className="flex items-center gap-2 rounded-full border border-neutral-200 bg-white p-1.5 pr-2 transition hover:border-violet-200 hover:bg-violet-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:border-violet-500/50 dark:hover:bg-neutral-800 sm:gap-2.5 sm:pr-3"
       >
-        <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-violet-100 text-sm font-bold text-violet-700">
+        <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-violet-100 text-sm font-bold text-violet-700 dark:bg-violet-500/20 dark:text-violet-300">
           {user.image ? (
             <Image
               src={user.image}
@@ -154,13 +157,13 @@ const UserInfo = () => {
           )}
         </span>
 
-        <span className="hidden max-w-28 truncate text-sm font-semibold text-neutral-800 sm:block">
+        <span className="hidden max-w-28 truncate text-sm font-semibold text-neutral-800 dark:text-neutral-100 sm:block">
           {user.name || "My Account"}
         </span>
 
         <ChevronDown
           size={16}
-          className={`text-neutral-500 transition-transform duration-200 ${
+          className={`text-neutral-500 transition-transform duration-200 dark:text-neutral-400 ${
             isOpen ? "rotate-180" : ""
           }`}
         />
@@ -170,12 +173,12 @@ const UserInfo = () => {
       {isOpen && (
         <div
           role="menu"
-          className="absolute right-0 top-full z-50 mt-2 w-[min(19rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-xl shadow-neutral-900/10"
+          className="absolute right-0 top-full z-50 mt-2 w-[min(19rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-xl shadow-neutral-900/10 dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-black/30"
         >
           {/* User details */}
-          <div className="border-b border-neutral-100 bg-gradient-to-br from-violet-50 to-white px-5 py-4">
+          <div className="border-b border-neutral-100 bg-gradient-to-br from-violet-50 to-white px-5 py-4 dark:border-neutral-800 dark:from-violet-500/10 dark:to-neutral-900">
             <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-violet-100 text-lg font-bold text-violet-700">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-violet-100 text-lg font-bold text-violet-700 dark:bg-violet-500/20 dark:text-violet-300">
                 {user.image ? (
                   <Image
                     src={user.image}
@@ -190,10 +193,10 @@ const UserInfo = () => {
               </span>
 
               <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-neutral-900">
+                <p className="truncate text-sm font-semibold text-neutral-900 dark:text-neutral-100">
                   {user.name || "StudioSpace User"}
                 </p>
-                <p className="truncate text-xs text-neutral-500">
+                <p className="truncate text-xs text-neutral-500 dark:text-neutral-400">
                   {user.email}
                 </p>
               </div>
@@ -208,7 +211,7 @@ const UserInfo = () => {
                 href={href}
                 role="menuitem"
                 onClick={() => setIsOpen(false)}
-                className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-neutral-700 transition hover:bg-violet-50 hover:text-violet-700"
+                className={menuLinkClass}
               >
                 <Icon size={18} className="shrink-0" />
                 <span>{label}</span>
@@ -219,7 +222,7 @@ const UserInfo = () => {
               href="/profile"
               role="menuitem"
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-neutral-700 transition hover:bg-violet-50 hover:text-violet-700"
+              className={menuLinkClass}
             >
               <UserRound size={18} className="shrink-0" />
               <span>My Profile</span>
@@ -227,12 +230,12 @@ const UserInfo = () => {
           </div>
 
           {/* Logout */}
-          <div className="border-t border-neutral-100 p-2">
+          <div className="border-t border-neutral-100 p-2 dark:border-neutral-800">
             <button
               type="button"
               role="menuitem"
               onClick={handleSignout}
-              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-red-600 transition hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-red-600 transition hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 dark:text-red-400 dark:hover:bg-red-500/10 dark:focus-visible:ring-red-500"
             >
               <LogOut size={18} />
               <span>Logout</span>
