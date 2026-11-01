@@ -10,7 +10,7 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "Explore Studios", href: "/studios" },
   { label: "How It Works", href: "/#how-it-works" },
-  { label: "About Us", href: "/about" },
+  { label: "About Us", href: "/#about" },
 ];
 
 const Navbar = () => {
@@ -18,9 +18,10 @@ const Navbar = () => {
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
-    if (href === "/#how-it-works") return false;
+    if (href === "/#how-it-works") return pathname === "/#how-it-works";
+    if (href === "/#about") return pathname === "/#about";
 
-    return pathname === href || pathname.startsWith(`${href}/`);
+    return pathname === href || pathname.startsWith(`${href}/`);  
   };
 
   const getNavClass = (active: boolean) =>

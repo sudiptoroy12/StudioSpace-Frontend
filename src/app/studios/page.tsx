@@ -22,9 +22,7 @@ export default function StudiosPage() {
         </main>
       }
     >
-      <StudiosContent
-      
-      />
+      <StudiosContent />
     </Suspense>
   );
 }
