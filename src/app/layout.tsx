@@ -32,7 +32,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
          <ThemeProvider>
            <Navbar/>
         
-        <main className="max-w-7xl mx-auto">{children}</main>
+        <main className="w-full mx-auto">{children}</main>
          <ToastContainer />
         </ThemeProvider>
 

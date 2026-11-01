@@ -1,0 +1,50 @@
+
+.studio-hero-swiper {
+  position: relative;
+  overflow: hidden;
+}
+
+.studio-hero-swiper .swiper-slide {
+  overflow: hidden;
+}
+
+.studio-hero-swiper .swiper-pagination {
+  position: absolute;
+  z-index: 20;
+  bottom: 36px;
+  left: max(20px, calc((100% - 1280px) / 2 + 48px));
+  display: flex;
+  width: auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.studio-hero-swiper .swiper-pagination-bullet {
+  width: 9px;
+  height: 9px;
+  margin: 0 !important;
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.45);
+  transition:
+    width 250ms ease,
+    background 250ms ease;
+}
+
+.studio-hero-swiper .swiper-pagination-bullet-active {
+  width: 30px;
+  border-radius: 999px;
+  background: #a78bfa;
+}
+
+@media (max-width: 640px) {
+  .studio-hero-swiper .swiper-pagination {
+    bottom: 36px;
+    left: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .studio-hero-swiper .swiper-pagination-bullet {
+    transition: none;
+  }
+}

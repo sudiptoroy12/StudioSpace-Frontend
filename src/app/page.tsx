@@ -1,10 +1,17 @@
-import Image from "next/image";
+
+import StudioHeroSlider from "./components/home/studioslider/StudioHeroSlider";
+import StudioCategories from "./components/home/categories/StudioCategories";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      
-   
-    </div>
-  );
+       <main>
+      <StudioHeroSlider
+       />
+       <StudioCategories/>
+
+      {/* Your existing homepage sections */}
+    </main>
+
+  )
+  
 }
