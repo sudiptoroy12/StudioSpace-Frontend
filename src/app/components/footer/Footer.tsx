@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, type FormEvent } from "react";
+import {  useState, type FormEvent } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -16,6 +16,7 @@ import {
   Sparkles,
   Video,
 } from "lucide-react";
+
 
 const exploreLinks = [
   { label: "Explore Studios", href: "/studios" },
@@ -41,16 +42,12 @@ const supportLinks = [
 ];
 
 export default function Footer() {
-  const [year, setYear] = useState(2026);
+
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [newsletterMessage, setNewsletterMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Fix: read the current year after the component mounts.
-  useEffect(() => {
-    setYear(new Date().getFullYear());
-  }, []);
 
   async function handleSubscribe(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -322,9 +319,9 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="flex flex-col gap-4 border-t border-white/10 py-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-neutral-500">
-            © {year} StudioSpace. All rights reserved.
-          </p>
+         <p className="text-sm text-neutral-400">
+  © 2026 StudioSpace. All rights reserved.
+</p>
 
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-neutral-500">
             <Link href="/privacy" className="transition hover:text-white">
