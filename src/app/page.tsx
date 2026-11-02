@@ -3,6 +3,7 @@ import StudioHeroSlider from "./components/home/studioslider/StudioHeroSlider";
 import StudioCategories from "./components/home/categories/StudioCategories";
 import HowItWorks from "./components/home/HowItWorks";
 import AboutUs from "./components/home/AboutUs";
+import HostGuarantee from "./components/home/HostGuarantee";
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
        />
        <StudioCategories/>
        <HowItWorks/>
+       <HostGuarantee />
        <AboutUs/>
 
       {/* Your existing homepage sections */}
