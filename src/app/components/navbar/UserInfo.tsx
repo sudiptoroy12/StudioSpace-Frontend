@@ -28,7 +28,7 @@ const menuLinks = [
   },
   {
     label: "Add New Studio",
-    href: "/studios/new",
+    href: "/add-studios",
     icon: PlusCircle,
   },
   {

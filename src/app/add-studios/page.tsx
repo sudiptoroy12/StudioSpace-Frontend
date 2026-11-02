@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, type FormEvent } from "react";
@@ -16,6 +15,10 @@ import {
   Wallet,
 } from "lucide-react";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 const categories = [
   { label: "Photo Studio", value: "photo-studios" },
@@ -72,10 +75,7 @@ export default function NewStudioPage() {
   const [message, setMessage] = useState("");
   const [published, setPublished] = useState(false);
 
-  function updateField(
-    field: keyof StudioForm,
-    value: string,
-  ) {
+  function updateField(field: keyof StudioForm, value: string) {
     setForm((current) => ({ ...current, [field]: value }));
     setMessage("");
     setPublished(false);
@@ -92,6 +92,7 @@ export default function NewStudioPage() {
         : [...current, amenity],
     );
   }
+  const router = useRouter();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -132,14 +133,26 @@ export default function NewStudioPage() {
         return;
       }
     }
-
-    setIsPublishing(true);
+ setIsPublishing(true);
 
     try {
-      const response = await fetch("/api/studios", {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+      if (!API_URL) {
+        throw new Error("API URL is not configured.");
+      }
+
+      const token = await getTokenFromClient();
+
+      if (!token) {
+        throw new Error("Please sign in before publishing your studio.");
+      }
+
+      const response = await fetch(`${API_URL}/studios`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           title: form.title.trim(),
@@ -158,19 +171,20 @@ export default function NewStudioPage() {
 
       if (!response.ok) {
         throw new Error(
-          result?.message || "Unable to publish your studio listing.",
+          result?.message || "Unable to publish your studio listing."
         );
       }
 
-      setPublished(true);
-      setMessage(
-        result?.message || "Your studio listing was published successfully!",
+      toast.success(
+        result?.message || "Studio listing published successfully!"
       );
+
+      router.push("/my-listings");
     } catch (error) {
-      setMessage(
+      toast.error(
         error instanceof Error
           ? error.message
-          : "Something went wrong. Please try again.",
+          : "Something went wrong. Please try again."
       );
     } finally {
       setIsPublishing(false);
@@ -180,8 +194,12 @@ export default function NewStudioPage() {
   const inputClass =
     "h-[50px] w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 text-sm text-neutral-900 outline-none transition placeholder:text-neutral-400 focus:border-amber-400 focus:bg-white focus:ring-4 focus:ring-amber-100/70";
 
-  const labelClass =
-    "mb-2 block text-[13px] font-semibold text-neutral-700";
+  const labelClass = "mb-2 block text-[13px] font-semibold text-neutral-700";
+
+  const { data: session } = authClient.useSession();
+
+  const userName = session?.user?.name ?? "";
+  const userEmail = session?.user?.email ?? "";
 
   return (
     <main className="min-h-screen bg-[#faf9f7] px-4 py-8 sm:px-6 lg:px-8">
@@ -433,9 +451,7 @@ export default function NewStudioPage() {
                     maxLength={5000}
                     rows={5}
                     value={form.description}
-                    onChange={(e) =>
-                      updateField("description", e.target.value)
-                    }
+                    onChange={(e) => updateField("description", e.target.value)}
                     placeholder="Describe your workspace, equipment, lighting, acoustics, facilities, access instructions, and what makes it special..."
                     className="w-full resize-y rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm leading-6 text-neutral-900 outline-none transition placeholder:text-neutral-400 focus:border-amber-400 focus:bg-white focus:ring-4 focus:ring-amber-100/70"
                   />
@@ -456,10 +472,7 @@ export default function NewStudioPage() {
                   <div className="flex items-center gap-2 text-neutral-600">
                     <UserRound className="h-4 w-4 shrink-0 text-neutral-400" />
                     <span>
-                      Host Name:{" "}
-                      <strong className="text-neutral-800">
-                        Signed-in host
-                      </strong>
+                      Host Name: <input value={userName} readOnly />
                     </span>
                   </div>
 
@@ -476,10 +489,7 @@ export default function NewStudioPage() {
                       <path d="m3 7 9 6 9-6" />
                     </svg>
                     <span>
-                      Host Email:{" "}
-                      <strong className="break-all text-neutral-800">
-                        Your account email
-                      </strong>
+                      Host Email: <input value={userEmail} readOnly />
                     </span>
                   </div>
                 </div>
