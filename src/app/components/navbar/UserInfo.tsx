@@ -173,7 +173,7 @@ const UserInfo = () => {
       {isOpen && (
         <div
           role="menu"
-          className="absolute right-0 top-full z-50 mt-2 w-[min(19rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-xl shadow-neutral-900/10 dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-black/30"
+          className="absolute right-0 top-full z-50 pt-2 w-[min(19rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-xl shadow-neutral-900/10 dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-black/30"
         >
           {/* User details */}
           <div className="border-b border-neutral-100 bg-gradient-to-br from-violet-50 to-white px-5 py-4 dark:border-neutral-800 dark:from-violet-500/10 dark:to-neutral-900">

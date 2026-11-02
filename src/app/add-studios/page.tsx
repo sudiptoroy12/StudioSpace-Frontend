@@ -144,6 +144,8 @@ export default function NewStudioPage() {
 
       const token = await getTokenFromClient();
 
+      console.log("Token retrieved from client:", token);
+
       if (!token) {
         throw new Error("Please sign in before publishing your studio.");
       }

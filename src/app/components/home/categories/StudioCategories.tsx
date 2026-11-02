@@ -1,5 +1,7 @@
+
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -10,13 +12,24 @@ import {
   Palette,
 } from "lucide-react";
 
-const categories = [
+type Studio = {
+  category?: string;
+};
+
+type Category = {
+  name: string;
+  slug: string;
+  description: string;
+  icon: typeof Camera;
+  color: string;
+};
+
+const categories: Category[] = [
   {
     name: "Photo Studios",
     slug: "photo-studios",
     description:
       "Cyclorama walls, natural daylight lofts, and profoto lighting setups.",
-    count: "24+ Spaces",
     icon: Camera,
     color: "bg-sky-100 text-sky-500",
   },
@@ -25,7 +38,6 @@ const categories = [
     slug: "sound-stages",
     description:
       "Acoustic blackboxes, green screens, camlock power, and drive-in access.",
-    count: "16+ Spaces",
     icon: Film,
     color: "bg-purple-100 text-purple-500",
   },
@@ -34,7 +46,6 @@ const categories = [
     slug: "podcast-rooms",
     description:
       "Turnkey audio/video recording with multi-cam 4K switchers and Shure mics.",
-    count: "19+ Spaces",
     icon: Mic,
     color: "bg-emerald-100 text-emerald-500",
   },
@@ -43,7 +54,6 @@ const categories = [
     slug: "music-suites",
     description:
       "Dolby Atmos monitoring, analog consoles, vocal booths, and live rooms.",
-    count: "14+ Spaces",
     icon: Music,
     color: "bg-amber-100 text-amber-500",
   },
@@ -52,13 +62,106 @@ const categories = [
     slug: "art-workshops",
     description:
       "Ceramic kilns, pottery wheels, printmaking presses, and raw maker space.",
-    count: "11+ Spaces",
     icon: Palette,
     color: "bg-pink-100 text-pink-500",
   },
 ];
 
+// Normalize category values received from the backend.
+function normalizeCategory(value: string | undefined): string {
+  const category = (value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/_/g, "-")
+    .replace(/\s+/g, "-");
+
+  const aliases: Record<string, string> = {
+    "photo-studio": "photo-studios",
+    "photo-studios": "photo-studios",
+    "film-stage": "sound-stages",
+    "film-stages": "sound-stages",
+    "sound-stage": "sound-stages",
+    "sound-stages": "sound-stages",
+    "podcast-room": "podcast-rooms",
+    "podcast-rooms": "podcast-rooms",
+    "music-suite": "music-suites",
+    "music-suites": "music-suites",
+    "art-workshop": "art-workshops",
+    "art-workshops": "art-workshops",
+  };
+
+  return aliases[category] ?? category;
+}
+
 export default function StudioCategories() {
+  const [categoryCounts, setCategoryCounts] = useState<
+    Record<string, number>
+  >({});
+  const [loading, setLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function fetchStudios() {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, "");
+
+        if (!apiUrl) {
+          throw new Error("NEXT_PUBLIC_API_URL is not configured");
+        }
+
+        const response = await fetch(`${apiUrl}/studios`, {
+          signal: controller.signal,
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch studios: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        // Support an array or common API response wrappers.
+        const studios: Studio[] = Array.isArray(result)
+          ? result
+          : Array.isArray(result.data)
+            ? result.data
+            : Array.isArray(result.studios)
+              ? result.studios
+              : [];
+
+        const counts: Record<string, number> = {};
+
+        for (const studio of studios) {
+          const slug = normalizeCategory(studio.category);
+
+          if (slug) {
+            counts[slug] = (counts[slug] ?? 0) + 1;
+          }
+        }
+
+        if (!controller.signal.aborted) {
+          setCategoryCounts(counts);
+          setHasError(false);
+        }
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.error("Error fetching studio categories:", error);
+          setHasError(true);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void fetchStudios();
+
+    return () => controller.abort();
+  }, []);
+
   return (
     <section className="bg-[#faf9f7] px-5 py-16 sm:px-8 lg:py-20">
       <div className="mx-auto max-w-7xl">
@@ -87,6 +190,7 @@ export default function StudioCategories() {
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {categories.map((category) => {
             const Icon = category.icon;
+            const count = categoryCounts[category.slug] ?? 0;
 
             return (
               <Link
@@ -110,10 +214,14 @@ export default function StudioCategories() {
                   {category.description}
                 </p>
 
-                {/* Footer */}
+                {/* Dynamic category count */}
                 <div className="mt-5 flex items-center justify-between border-t border-neutral-100 pt-4">
                   <span className="text-xs font-medium text-neutral-400">
-                    {category.count}
+                    {loading
+                      ? "Loading spaces..."
+                      : hasError
+                        ? "Count unavailable"
+                        : `${count} ${count === 1 ? "Space" : "Spaces"}`}
                   </span>
 
                   <ArrowRight className="h-4 w-4 text-neutral-400 transition-all duration-300 group-hover:translate-x-1 group-hover:text-amber-600" />

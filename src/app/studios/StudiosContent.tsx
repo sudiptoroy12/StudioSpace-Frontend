@@ -2,8 +2,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useMemo, useState, useEffect } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowDownUp,
   ArrowLeft,
@@ -21,6 +21,8 @@ type Studio = {
   id: string;
   title: string;
   category: string;
+  hourlyRate: number;
+  imageUrl: string;
   categorySlug: string;
   location: string;
   description: string;
@@ -40,152 +42,7 @@ const categories = [
   { label: "Art Workshop", value: "art-workshops" },
 ];
 
-const studios: Studio[] = [
-  {
-    id: "neon-vault",
-    title: "Neon Vault 4K Cinema Soundstage & Production Studio",
-    category: "Film Stage",
-    categorySlug: "sound-stages",
-    location: "Arts District, Downtown Los Angeles, CA",
-    description:
-      "Massive 3,000 sq.ft creative soundstage with 22-foot ceilings, automated RGB lighting grid, heavy-duty production equipment, and flexible filming space.",
-    price: 135,
-    rating: 5.0,
-    capacity: 30,
-    deposit: 150,
-    image:
-      "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1200&q=85",
-    createdAt: 9,
-  },
-  {
-    id: "skyline-horizon",
-    title: "Skyline Horizon Rooftop Production Studio",
-    category: "Film Stage",
-    categorySlug: "sound-stages",
-    location: "South Loop Arts District, Chicago, IL",
-    description:
-      "An open-air architectural rooftop space with unobstructed views of the city skyline. Ideal for creative shoots and commercial productions.",
-    price: 140,
-    rating: 4.9,
-    capacity: 30,
-    deposit: 180,
-    image:
-      "https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=1200&q=85",
-    createdAt: 8,
-  },
-  {
-    id: "velvet-echo",
-    title: "Velvet Echo Analog Recording & Live Music Room",
-    category: "Music Suite",
-    categorySlug: "music-suites",
-    location: "Music Row, Nashville, TN",
-    description:
-      "Warm, natural timber acoustics paired with vintage analog outboard gear. Perfect for live bands, recording sessions, and music production.",
-    price: 110,
-    rating: 5.0,
-    capacity: 12,
-    deposit: 120,
-    image:
-      "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1200&q=85",
-    createdAt: 7,
-  },
-  {
-    id: "daylight-loft",
-    title: "The Daylight Loft Photography Studio",
-    category: "Photo Studio",
-    categorySlug: "photo-studios",
-    location: "Brooklyn Arts District, New York, NY",
-    description:
-      "A bright photography loft with large industrial windows, natural daylight, backdrops, and plenty of room for product and portrait shoots.",
-    price: 85,
-    rating: 4.9,
-    capacity: 10,
-    deposit: 100,
-    image:
-      "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=85",
-    createdAt: 6,
-  },
-  {
-    id: "podcast-lounge",
-    title: "The Podcast Lounge — Professional Recording Room",
-    category: "Podcast Room",
-    categorySlug: "podcast-rooms",
-    location: "East Austin, Austin, TX",
-    description:
-      "A comfortable recording room featuring a multi-camera setup, broadcast microphones, sound treatment, and a professional recording desk.",
-    price: 65,
-    rating: 4.8,
-    capacity: 6,
-    deposit: 75,
-    image:
-      "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=1200&q=85",
-    createdAt: 5,
-  },
-  {
-    id: "creative-canvas",
-    title: "Creative Canvas Art & Maker Workshop",
-    category: "Art Workshop",
-    categorySlug: "art-workshops",
-    location: "Mission District, San Francisco, CA",
-    description:
-      "A versatile maker space with generous worktables, natural light, creative supplies, and room for collaborative art workshops.",
-    price: 55,
-    rating: 4.7,
-    capacity: 15,
-    deposit: 80,
-    image:
-      "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=1200&q=85",
-    createdAt: 4,
-  },
-  {
-    id: "frame-and-focus",
-    title: "Frame & Focus Commercial Photo Studio",
-    category: "Photo Studio",
-    categorySlug: "photo-studios",
-    location: "Downtown Seattle, Seattle, WA",
-    description:
-      "A flexible commercial photography space with studio lighting, seamless backdrops, and room for portraits, fashion, and product shoots.",
-    price: 95,
-    rating: 4.9,
-    capacity: 12,
-    deposit: 100,
-    image:
-      "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&w=1200&q=85",
-    createdAt: 3,
-  },
-  {
-    id: "soundwave-room",
-    title: "Soundwave Podcast & Voiceover Studio",
-    category: "Podcast Room",
-    categorySlug: "podcast-rooms",
-    location: "Midtown, Atlanta, GA",
-    description:
-      "An acoustically treated studio for podcasts, voiceovers, interviews, and audio-first content with a comfortable recording setup.",
-    price: 70,
-    rating: 4.8,
-    capacity: 5,
-    deposit: 60,
-    image:
-      "https://images.unsplash.com/photo-1593078166031-9c9d7a4c6c86?auto=format&fit=crop&w=1200&q=85",
-    createdAt: 2,
-  },
-  {
-    id: "makers-corner",
-    title: "Maker's Corner Creative Workshop",
-    category: "Art Workshop",
-    categorySlug: "art-workshops",
-    location: "Pearl District, Portland, OR",
-    description:
-      "A welcoming creative workshop for hands-on projects, art classes, small group sessions, and collaborative maker events.",
-    price: 45,
-    rating: 4.7,
-    capacity: 18,
-    deposit: 50,
-    image:
-      "https://images.unsplash.com/photo-1452860606245-08befc0ff44b?auto=format&fit=crop&w=1200&q=85",
-    createdAt: 1,
-  },
-];
+
 
 const sortOptions = [
   { label: "Newest Listings", value: "newest" },
@@ -196,10 +53,13 @@ const sortOptions = [
 
 export default function StudiosPage() {
   const searchParams = useSearchParams();
-  const initialCategory = searchParams.get("category") ?? "all";
-
+  const router = useRouter();
+  const pathname = usePathname();
+const [studios, setStudios] = useState<Studio[]>([]);
+const [isLoading, setIsLoading] = useState(true);
+const [fetchError, setFetchError] = useState("");
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState(initialCategory);
+  const [category, setCategory] = useState("all");
   const [sort, setSort] = useState("newest");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -207,6 +67,144 @@ export default function StudiosPage() {
   const [appliedMax, setAppliedMax] = useState("");
   const [favorites, setFavorites] = useState<string[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
+
+// Keep the selected category synchronized with the URL. This makes category
+  // links from the homepage work even when this page is already mounted.
+  useEffect(() => {
+    const requestedCategory = searchParams.get("category") ?? "all";
+    const validCategories = categories.map((item) => item.value);
+
+    setCategory(
+      requestedCategory === "all" || validCategories.includes(requestedCategory)
+        ? requestedCategory
+        : "all",
+    );
+  }, [searchParams]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+  async function fetchStudios() {
+    try {
+      setIsLoading(true);
+      setFetchError("");
+
+      const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+      if (!API_URL) {
+        throw new Error("API URL is not configured.");
+      }
+
+      const response = await fetch(`${API_URL}/studios`, { signal: controller.signal });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch studios.");
+      }
+
+     
+const responseData = await response.json();
+
+// Support both an array response and { data: [...] } / { studios: [...] }.
+const data = Array.isArray(responseData)
+  ? responseData
+  : Array.isArray(responseData.data)
+    ? responseData.data
+    : Array.isArray(responseData.studios)
+      ? responseData.studios
+      : [];
+
+const categoryConfig: Record<string, { slug: string; label: string }> = {
+  "photo studio": { slug: "photo-studios", label: "Photo Studio" },
+  "photo studios": { slug: "photo-studios", label: "Photo Studio" },
+  "photo-studios": { slug: "photo-studios", label: "Photo Studio" },
+
+  "film stage": { slug: "sound-stages", label: "Film Stage" },
+  "film stages": { slug: "sound-stages", label: "Film Stage" },
+  "sound stage": { slug: "sound-stages", label: "Film Stage" },
+  "sound stages": { slug: "sound-stages", label: "Film Stage" },
+  "sound-stages": { slug: "sound-stages", label: "Film Stage" },
+
+  "podcast room": { slug: "podcast-rooms", label: "Podcast Room" },
+  "podcast rooms": { slug: "podcast-rooms", label: "Podcast Room" },
+  "podcast-rooms": { slug: "podcast-rooms", label: "Podcast Room" },
+
+  "music suite": { slug: "music-suites", label: "Music Suite" },
+  "music suites": { slug: "music-suites", label: "Music Suite" },
+  "music-suites": { slug: "music-suites", label: "Music Suite" },
+
+  "art workshop": { slug: "art-workshops", label: "Art Workshop" },
+  "art workshops": { slug: "art-workshops", label: "Art Workshop" },
+  "art-workshops": { slug: "art-workshops", label: "Art Workshop" },
+};
+
+const mappedStudios: Studio[] = data.map(
+  (studio: {
+    _id?: string;
+    id?: string;
+    title?: string;
+    category?: string;
+    location?: string;
+    description?: string;
+    hourlyRate?: number | string;
+    capacity?: number | string;
+    deposit?: number | string;
+    imageUrl?: string;
+    createdAt?: string | number;
+    rating?: number | string;
+  }) => {
+    const rawCategory = String(studio.category ?? "")
+      .trim()
+      .toLowerCase()
+      .replace(/_/g, "-");
+
+    const normalizedCategory = categoryConfig[rawCategory] ?? {
+      slug: rawCategory,
+      label: studio.category ?? "Other",
+    };
+
+    return {
+      id: String(studio._id ?? studio.id ?? ""),
+      title: studio.title ?? "Untitled Studio",
+      category: normalizedCategory.label,
+      categorySlug: normalizedCategory.slug,
+      location: studio.location ?? "Location unavailable",
+      description: studio.description ?? "",
+      price: Number(studio.hourlyRate ?? 0),
+      rating: Number(studio.rating ?? 0),
+      capacity: Number(studio.capacity ?? 0),
+      deposit: Number(studio.deposit ?? 0),
+      image: studio.imageUrl || "/images/studio-placeholder.png",
+      createdAt: studio.createdAt
+        ? new Date(studio.createdAt).getTime()
+        : 0,
+    };
+  },
+);
+
+setStudios(mappedStudios);
+
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        return;
+      }
+
+      setFetchError(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while loading studios.",
+      );
+    } finally {
+      if (!controller.signal.aborted) {
+        setIsLoading(false);
+      }
+    }
+  }
+
+  void fetchStudios();
+
+  return () => controller.abort();
+}, []);
+
 
   const filteredStudios = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -264,9 +262,23 @@ export default function StudiosPage() {
     favorites,
   ]);
 
+  function selectCategory(value: string) {
+    setCategory(value);
+
+    const params = new URLSearchParams(searchParams.toString());
+    if (value === "all") {
+      params.delete("category");
+    } else {
+      params.set("category", value);
+    }
+
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  }
+
   function resetFilters() {
     setSearch("");
-    setCategory("all");
+    selectCategory("all");
     setSort("newest");
     setMinPrice("");
     setMaxPrice("");
@@ -387,7 +399,7 @@ export default function StudiosPage() {
               </span>
 
               <button
-                onClick={() => setCategory("all")}
+                onClick={() => selectCategory("all")}
                 className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
                   category === "all"
                     ? "bg-amber-500 text-neutral-950 shadow-sm"
@@ -400,7 +412,7 @@ export default function StudiosPage() {
               {categories.map((item) => (
                 <button
                   key={item.value}
-                  onClick={() => setCategory(item.value)}
+                  onClick={() => selectCategory(item.value)}
                   className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
                     category === item.value
                       ? "bg-amber-500 text-neutral-950 shadow-sm"
@@ -482,9 +494,37 @@ export default function StudiosPage() {
           </div>
         </section>
 
+      
         {/* Studio cards */}
-        {filteredStudios.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+{isLoading ? (
+  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+    {[1, 2, 3].map((item) => (
+      <div
+        key={item}
+        className="h-96 animate-pulse rounded-2xl bg-neutral-200"
+      />
+    ))}
+  </div>
+) : fetchError ? (
+  <div className="rounded-2xl border border-red-200 bg-white px-6 py-12 text-center">
+    <h2 className="text-lg font-bold text-red-600">
+      Unable to load studios
+    </h2>
+
+    <p className="mt-2 text-sm text-neutral-500">
+      {fetchError}
+    </p>
+
+    <button
+      type="button"
+      onClick={() => window.location.reload()}
+      className="mt-4 rounded-xl bg-neutral-900 px-5 py-3 text-sm font-bold text-white"
+    >
+      Try again
+    </button>
+  </div>
+) : filteredStudios.length > 0 ? (
+ <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {filteredStudios.map((studio) => {
               const isFavorite = favorites.includes(studio.id);
 
