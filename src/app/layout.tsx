@@ -1,7 +1,10 @@
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { Suspense } from "react";
 import { ToastContainer } from "react-toastify";
+
+import "./globals.css";
 import Navbar from "./components/navbar/Navbar";
 import ThemeProvider from "./components/theme/ThemeProvider";
 import Footer from "./components/footer/Footer";
@@ -21,27 +24,30 @@ export const metadata: Metadata = {
   description: "Discover and book creative studios with StudioSpace.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: LayoutProps<"/">) {
   return (
     <html
       lang="en"
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full ">
+      <body className="min-h-full">
+        <ThemeProvider>
+          <Suspense fallback={<div className="h-24" />}>
+            <Navbar />
+          </Suspense>
 
-         <ThemeProvider>
-           <Navbar/>
-        
-        <main className="w-full mx-auto">{children}</main>
-         <ToastContainer />
-         <Footer/>
+          <main className="mx-auto w-full">
+            {children}
+          </main>
+
+          <ToastContainer />
+
+          <Footer />
         </ThemeProvider>
-
-       
-        
-        
-        </body>
+      </body>
     </html>
   );
 }

@@ -1,4 +1,5 @@
 
+import { Suspense } from "react";
 import StudioBookingCard from "@/app/components/studios/StudioBookingCard";
 import { notFound } from "next/navigation";
 
@@ -28,10 +29,9 @@ async function getStudio(id: string): Promise<Studio | null> {
     throw new Error("NEXT_PUBLIC_API_URL is not configured.");
   }
 
-  const response = await fetch(
-    `${apiUrl}/studios/${id}`,
-    { cache: "no-store" }
-  );
+  const response = await fetch(`${apiUrl}/studios/${id}`, {
+    cache: "no-store",
+  });
 
   if (response.status === 404) {
     return null;
@@ -44,17 +44,32 @@ async function getStudio(id: string): Promise<Studio | null> {
   return response.json();
 }
 
-export default async function StudioDetailsPage({
+export default function StudioDetailsPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  return (
+    <Suspense fallback={<StudioDetailsLoading />}>
+      <StudioDetails params={params} />
+    </Suspense>
+  );
+}
+
+async function StudioDetails({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  // Read dynamic route params inside Suspense.
   const { id } = await params;
 
+  // Validate the MongoDB ObjectId.
   if (!/^[a-f\d]{24}$/i.test(id)) {
     notFound();
   }
 
+  // Fetch studio details inside Suspense.
   const studio = await getStudio(id);
 
   if (!studio) {
@@ -104,6 +119,7 @@ export default async function StudioDetailsPage({
               <h2 className="text-xl font-semibold">
                 About this workspace
               </h2>
+
               <p className="mt-4 leading-7 text-neutral-400">
                 {studio.description}
               </p>
@@ -117,21 +133,27 @@ export default async function StudioDetailsPage({
 
               <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
                 <div className="rounded-xl border border-white/10 p-4">
-                  <p className="text-sm text-neutral-400">Capacity</p>
+                  <p className="text-sm text-neutral-400">
+                    Capacity
+                  </p>
                   <p className="mt-2 font-semibold">
                     {studio.capacity} people
                   </p>
                 </div>
 
                 <div className="rounded-xl border border-white/10 p-4">
-                  <p className="text-sm text-neutral-400">Hourly rate</p>
+                  <p className="text-sm text-neutral-400">
+                    Hourly rate
+                  </p>
                   <p className="mt-2 font-semibold">
                     ৳{studio.hourlyRate}
                   </p>
                 </div>
 
                 <div className="rounded-xl border border-white/10 p-4">
-                  <p className="text-sm text-neutral-400">Deposit</p>
+                  <p className="text-sm text-neutral-400">
+                    Deposit
+                  </p>
                   <p className="mt-2 font-semibold">
                     ৳{studio.deposit}
                   </p>
@@ -141,7 +163,9 @@ export default async function StudioDetailsPage({
 
             {/* Amenities */}
             <section>
-              <h2 className="text-xl font-semibold">Amenities</h2>
+              <h2 className="text-xl font-semibold">
+                Amenities
+              </h2>
 
               <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {studio.amenities.map((amenity) => (
@@ -149,7 +173,9 @@ export default async function StudioDetailsPage({
                     key={amenity}
                     className="rounded-xl border border-white/10 px-4 py-3 text-neutral-300"
                   >
-                    <span className="mr-2 text-violet-400">✓</span>
+                    <span className="mr-2 text-violet-400">
+                      ✓
+                    </span>
                     {amenity}
                   </div>
                 ))}
@@ -158,7 +184,9 @@ export default async function StudioDetailsPage({
 
             {/* Host details */}
             <section>
-              <h2 className="text-xl font-semibold">Your host</h2>
+              <h2 className="text-xl font-semibold">
+                Your host
+              </h2>
 
               <div className="mt-4 flex items-center gap-4 rounded-2xl border border-white/10 p-5">
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-violet-500/20 text-xl font-bold text-violet-300">
@@ -169,6 +197,7 @@ export default async function StudioDetailsPage({
                   <p className="font-semibold">
                     {studio.host?.name ?? "Studio host"}
                   </p>
+
                   <p className="mt-1 text-sm text-neutral-400">
                     Workspace host
                   </p>
@@ -178,7 +207,10 @@ export default async function StudioDetailsPage({
 
             {/* Reviews */}
             <section>
-              <h2 className="text-xl font-semibold">Reviews</h2>
+              <h2 className="text-xl font-semibold">
+                Reviews
+              </h2>
+
               <p className="mt-3 text-neutral-400">
                 No reviews available yet.
               </p>
@@ -187,9 +219,34 @@ export default async function StudioDetailsPage({
 
           {/* Booking card */}
           <aside className="h-fit rounded-2xl border border-white/10 bg-white/[0.04] p-6 lg:sticky lg:top-24">
-          <StudioBookingCard studio={studio} />
-   
+            <StudioBookingCard studio={studio} />
           </aside>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+function StudioDetailsLoading() {
+  return (
+    <main className="min-h-screen bg-neutral-950 px-4 py-10 text-white sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl animate-pulse">
+        <div className="h-5 w-36 rounded bg-neutral-800" />
+
+        <div className="mt-5 h-10 w-72 max-w-full rounded bg-neutral-800" />
+
+        <div className="mt-4 h-5 w-48 rounded bg-neutral-800" />
+
+        <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_360px]">
+          <div>
+            <div className="h-[280px] rounded-2xl bg-neutral-800 sm:h-[460px]" />
+
+            <div className="mt-8 h-24 rounded-xl bg-neutral-800" />
+
+            <div className="mt-8 h-32 rounded-xl bg-neutral-800" />
+          </div>
+
+          <div className="h-72 rounded-2xl bg-neutral-800" />
         </div>
       </div>
     </main>

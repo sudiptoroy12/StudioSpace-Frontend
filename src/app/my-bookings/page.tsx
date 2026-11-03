@@ -198,11 +198,22 @@ export default function MyBookingsPage() {
     }
   }, [email]);
 
-  useEffect(() => {
-    if (sessionLoading) return;
+useEffect(() => {
+  if (sessionLoading) return;
 
-    void loadBookings();
-  }, [sessionLoading, loadBookings]);
+  let cancelled = false;
+
+  const timer = setTimeout(() => {
+    if (!cancelled) {
+      void loadBookings();
+    }
+  }, 0);
+
+  return () => {
+    cancelled = true;
+    clearTimeout(timer);
+  };
+}, [sessionLoading, loadBookings]);
 
   async function handleCancelBooking() {
     if (!selectedBooking || cancelling) return;

@@ -16,13 +16,17 @@ const navLinks = [
 const Navbar = () => {
   const pathname = usePathname();
 
-  const isActive = (href: string) => {
-    if (href === "/") return pathname === "/";
-    if (href === "/#how-it-works") return pathname === "/#how-it-works";
-    if (href === "/#about") return pathname === "/#about";
+ const isActive = (href: string) => {
+  if (href === "/") {
+    return pathname === "/";
+  }
 
-    return pathname === href || pathname.startsWith(`${href}/`);  
-  };
+  if (href === "/#how-it-works" || href === "/#about") {
+    return false;
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`);
+};
 
   const getNavClass = (active: boolean) =>
     `relative shrink-0 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-200 ${
