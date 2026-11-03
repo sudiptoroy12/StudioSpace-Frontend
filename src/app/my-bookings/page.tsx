@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -15,78 +15,178 @@ import {
   Hourglass,
   X,
 } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 type BookingStatus = "Cancelled" | "Pending Host Approval" | "Confirmed";
 
 type Booking = {
-  id: string;
-  studioName: string;
+  _id: string;
+  email: string;
+  studioId: string;
+  studioTitle: string;
   category: string;
-  image: string;
+  imageUrl: string;
   location: string;
   date: string;
   startTime: string;
   endTime: string;
   hours: number;
+  hourlyRate: number;
+  deposit: number;
   total: number;
   status: BookingStatus;
+  createdAt?: string;
 };
 
-const initialBookings: Booking[] = [
-  {
-    id: "a582c2",
-    studioName: "Neon Vault 4K Cinema Soundstage & Cyclorama",
-    category: "Music Suite",
-    image: "/images/studio-2.jpg",
-    location: "Arts District, Downtown Los Angeles, CA",
-    date: "2026-10-29",
-    startTime: "10:00",
-    endTime: "14:00",
-    hours: 4,
-    total: 690,
-    status: "Cancelled",
-  },
-  {
-    id: "4d6157",
-    studioName: "Neon Vault 4K Cinema Soundstage & Cyclorama",
-    category: "Music Suite",
-    image: "/images/studio-2.jpg",
-    location: "Arts District, Downtown Los Angeles, CA",
-    date: "2026-10-29",
-    startTime: "10:00",
-    endTime: "14:00",
-    hours: 4,
-    total: 690,
-    status: "Cancelled",
-  },
-  {
-    id: "2563de",
-    studioName: "The Prism Cyc & Cinema Soundstage",
-    category: "Film Stage",
-    image: "/images/studio-2.jpg",
-    location: "Brooklyn Navy Yard, Brooklyn, NY",
-    date: "2026-11-15",
-    startTime: "10:00",
-    endTime: "15:00",
-    hours: 5,
-    total: 775,
-    status: "Pending Host Approval",
-  },
-];
+function normalizeBooking(data: Record<string, unknown>): Booking {
+  return {
+    _id: String(data._id ?? data.id ?? ""),
+    email: String(data.email ?? ""),
+    studioId: String(data.studioId ?? ""),
+    studioTitle: String(data.studioTitle ?? data.studioName ?? "Studio"),
+    category: String(data.category ?? "Workspace"),
+    imageUrl: String(data.imageUrl ?? data.image ?? "/images/studio-2.jpg"),
+    location: String(data.location ?? "Location unavailable"),
+    date: String(data.date ?? ""),
+    startTime: String(data.startTime ?? ""),
+    endTime: String(data.endTime ?? ""),
+    hours: Number(data.hours ?? 0),
+    hourlyRate: Number(data.hourlyRate ?? 0),
+    deposit: Number(data.deposit ?? 0),
+    total: Number(data.total ?? 0),
+    status:
+      data.status === "Cancelled" ||
+      data.status === "Confirmed" ||
+      data.status === "Pending Host Approval"
+        ? data.status
+        : "Pending Host Approval",
+    createdAt: data.createdAt ? String(data.createdAt) : undefined,
+  };
+}
+
+function formatDate(date: string) {
+  if (!date) return "Date unavailable";
+
+  const parsed = new Date(`${date}T00:00:00`);
+
+  if (Number.isNaN(parsed.getTime())) return date;
+
+  return parsed.toLocaleDateString("en-BD", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function formatTime(time: string) {
+  if (!time) return "--";
+
+  const [hours, minutes] = time.split(":").map(Number);
+
+  if (
+    !Number.isInteger(hours) ||
+    !Number.isInteger(minutes) ||
+    hours < 0 ||
+    hours > 23 ||
+    minutes < 0 ||
+    minutes > 59
+  ) {
+    return time;
+  }
+
+  return new Date(2000, 0, 1, hours, minutes).toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
+function formatMoney(amount: number) {
+  return `৳${amount.toLocaleString("en-BD")}`;
+}
 
 export default function MyBookingsPage() {
-  const [bookings, setBookings] = useState<Booking[]>(initialBookings);
+  const { data: session, isPending: sessionPending } = authClient.useSession();
+
+  const email = session?.user?.email;
+
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [cancelTarget, setCancelTarget] = useState<Booking | null>(null);
   const [receiptTarget, setReceiptTarget] = useState<Booking | null>(null);
 
+  const fetchBookings = useCallback(async () => {
+    if (!email) return;
+
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    if (!apiUrl) {
+      setError("API URL is not configured. Check your .env.local file.");
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch(
+        `${apiUrl}/my-bookings/${encodeURIComponent(email)}`,
+        { cache: "no-store" }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to load your bookings.");
+      }
+
+      const data: unknown = await response.json();
+
+      if (!Array.isArray(data)) {
+        throw new Error("The server returned an unexpected response.");
+      }
+
+      setBookings(
+        data.map((item) => normalizeBooking(item as Record<string, unknown>))
+      );
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong while loading bookings."
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [email]);
+
+  useEffect(() => {
+    if (sessionPending) return;
+
+    if (!email) {
+      setBookings([]);
+      setError("");
+      setLoading(false);
+      return;
+    }
+
+    void fetchBookings();
+  }, [sessionPending, email, fetchBookings]);
+
+  function printReceipt(booking: Booking) {
+    setReceiptTarget(booking);
+
+    window.setTimeout(() => {
+      window.print();
+    }, 100);
+  }
+
+  // This only updates the UI. A real cancellation needs a backend endpoint.
   function confirmCancellation() {
     if (!cancelTarget) return;
 
-    // Demo behavior: updates the booking status locally.
-    // Connect this action to your authenticated backend API.
     setBookings((current) =>
       current.map((booking) =>
-        booking.id === cancelTarget.id
+        booking._id === cancelTarget._id
           ? { ...booking, status: "Cancelled" }
           : booking
       )
@@ -95,20 +195,42 @@ export default function MyBookingsPage() {
     setCancelTarget(null);
   }
 
-  function printReceipt(booking: Booking) {
-    setReceiptTarget(booking);
+  if (sessionPending || loading) {
+    return (
+      <main className="min-h-screen bg-[#fafafa] px-5 py-20 text-neutral-900">
+        <div className="mx-auto max-w-7xl text-center">
+          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-amber-200 border-t-amber-500" />
+          <p className="mt-4 text-sm text-neutral-500">
+            Loading your studio bookings...
+          </p>
+        </div>
+      </main>
+    );
+  }
 
-    // Opens the browser's print dialog.
-    // For a production app, generate a receipt with real payment details.
-    window.setTimeout(() => {
-      window.print();
-    }, 100);
+  if (!email) {
+    return (
+      <main className="min-h-screen bg-[#fafafa] px-5 py-20 text-neutral-900">
+        <div className="mx-auto max-w-lg rounded-2xl border border-neutral-200 bg-white p-8 text-center shadow-sm">
+          <CalendarDays size={38} className="mx-auto text-amber-500" />
+          <h1 className="mt-4 text-2xl font-bold">Sign in to view bookings</h1>
+          <p className="mt-2 text-sm text-neutral-500">
+            Your studio reservations will appear here after you sign in.
+          </p>
+          <Link
+            href="/signin"
+            className="mt-6 inline-flex rounded-xl bg-amber-400 px-5 py-3 font-bold text-neutral-950 hover:bg-amber-500"
+          >
+            Sign In
+          </Link>
+        </div>
+      </main>
+    );
   }
 
   return (
     <main className="min-h-screen bg-[#fafafa] text-neutral-900">
       <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8 lg:py-12">
-        {/* Heading */}
         <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-amber-600">
@@ -121,8 +243,7 @@ export default function MyBookingsPage() {
             </h1>
 
             <p className="mt-2 text-sm text-neutral-500 sm:text-base">
-              Track reservation statuses, cancellation requests, and shoot
-              times
+              Track your reservations, booking statuses, and studio times.
             </p>
           </div>
 
@@ -135,46 +256,63 @@ export default function MyBookingsPage() {
           </Link>
         </div>
 
-        {/* Booking cards */}
+        {error && (
+          <div
+            role="alert"
+            className="mb-6 flex flex-col gap-3 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <p>{error}</p>
+            <button
+              type="button"
+              onClick={() => void fetchBookings()}
+              className="shrink-0 rounded-lg border border-rose-200 bg-white px-4 py-2 font-semibold hover:bg-rose-100"
+            >
+              Try Again
+            </button>
+          </div>
+        )}
+
         <div className="space-y-4">
           {bookings.length > 0 ? (
             bookings.map((booking) => (
               <article
-                key={booking.id}
+                key={booking._id}
                 className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm transition hover:shadow-md sm:p-5"
               >
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-center">
-                  {/* Studio image */}
                   <div className="relative h-36 w-full shrink-0 overflow-hidden rounded-xl bg-neutral-100 sm:h-32 sm:w-32">
                     <Image
-                      src={booking.image}
-                      alt={booking.studioName}
+                      src={booking.imageUrl}
+                      alt={booking.studioTitle}
                       fill
+                      unoptimized
                       sizes="(max-width: 640px) 100vw, 128px"
                       className="object-cover"
                     />
                   </div>
 
-                  {/* Booking details */}
                   <div className="min-w-0 flex-1">
                     <div className="mb-2 flex flex-wrap items-center gap-2">
                       <StatusBadge status={booking.status} />
                       <span className="text-xs text-neutral-400">
-                        ID: #{booking.id}
+                        ID: #{booking._id.slice(-8)}
                       </span>
                     </div>
 
                     <h2 className="text-lg font-bold leading-snug text-neutral-900">
-                      {booking.studioName}
+                      {booking.studioTitle}
                     </h2>
 
-                    <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-neutral-500 sm:text-sm">
+                    <p className="mt-1 text-xs text-neutral-500">
+                      {booking.category.replaceAll("-", " ")}
+                    </p>
+
+                    <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-neutral-500 sm:text-sm">
                       <span className="inline-flex items-center gap-1.5">
-                        <CalendarDays
-                          size={15}
-                          className="text-amber-500"
-                        />
-                        <span className="font-semibold">{booking.date}</span>
+                        <CalendarDays size={15} className="text-amber-500" />
+                        <span className="font-semibold">
+                          {formatDate(booking.date)}
+                        </span>
                       </span>
 
                       <span className="hidden text-neutral-300 sm:inline">
@@ -183,8 +321,9 @@ export default function MyBookingsPage() {
 
                       <span className="inline-flex items-center gap-1.5">
                         <Clock3 size={15} className="text-amber-500" />
-                        {booking.startTime} - {booking.endTime} (
-                        {booking.hours} hrs)
+                        {formatTime(booking.startTime)} -{" "}
+                        {formatTime(booking.endTime)} ({booking.hours}{" "}
+                        {booking.hours === 1 ? "hour" : "hours"})
                       </span>
                     </div>
 
@@ -194,14 +333,13 @@ export default function MyBookingsPage() {
                     </p>
                   </div>
 
-                  {/* Price and actions */}
                   <div className="flex items-center justify-between gap-4 border-t border-neutral-100 pt-4 lg:min-w-[220px] lg:flex-col lg:items-end lg:justify-center lg:border-t-0 lg:pt-0">
                     <div className="lg:text-right">
                       <p className="text-xs text-neutral-400">
-                        Total Charged / Due
+                        Total / Due
                       </p>
                       <p className="mt-1 text-2xl font-extrabold text-amber-500">
-                        ${booking.total}
+                        {formatMoney(booking.total)}
                       </p>
                     </div>
 
@@ -229,17 +367,20 @@ export default function MyBookingsPage() {
                   </div>
                 </div>
 
-                {/* Hidden until printing */}
-                {receiptTarget?.id === booking.id && (
+                {receiptTarget?._id === booking._id && (
                   <div className="mt-4 hidden print:block">
-                    <h3 className="text-lg font-bold">StudioSpace Receipt</h3>
-                    <p>Booking ID: #{booking.id}</p>
-                    <p>Studio: {booking.studioName}</p>
-                    <p>Date: {booking.date}</p>
+                    <h3 className="text-xl font-bold">StudioSpace Receipt</h3>
+                    <p>Booking ID: #{booking._id}</p>
+                    <p>Studio: {booking.studioTitle}</p>
+                    <p>Location: {booking.location}</p>
+                    <p>Date: {formatDate(booking.date)}</p>
                     <p>
-                      Time: {booking.startTime} - {booking.endTime}
+                      Time: {formatTime(booking.startTime)} -{" "}
+                      {formatTime(booking.endTime)}
                     </p>
-                    <p>Total: ${booking.total}</p>
+                    <p>Hours: {booking.hours}</p>
+                    <p>Deposit: {formatMoney(booking.deposit)}</p>
+                    <p>Total: {formatMoney(booking.total)}</p>
                     <p>Status: {booking.status}</p>
                   </div>
                 )}
@@ -247,13 +388,10 @@ export default function MyBookingsPage() {
             ))
           ) : (
             <div className="rounded-2xl border border-neutral-200 bg-white px-6 py-16 text-center shadow-sm">
-              <CalendarDays
-                size={36}
-                className="mx-auto text-amber-500"
-              />
+              <CalendarDays size={36} className="mx-auto text-amber-500" />
               <h2 className="mt-4 text-xl font-bold">No bookings yet</h2>
               <p className="mt-2 text-sm text-neutral-500">
-                Find a creative space for your next production.
+                Your bookings will appear here after you reserve a workspace.
               </p>
               <Link
                 href="/studios"
@@ -266,7 +404,6 @@ export default function MyBookingsPage() {
         </div>
       </section>
 
-      {/* Cancel confirmation */}
       {cancelTarget && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/50 p-4 backdrop-blur-sm"
@@ -299,12 +436,12 @@ export default function MyBookingsPage() {
             </h2>
 
             <p className="mt-2 text-sm leading-6 text-neutral-500">
-              Are you sure you want to cancel your booking for{" "}
+              You are about to cancel your booking for{" "}
               <span className="font-semibold text-neutral-800">
-                {cancelTarget.studioName}
+                {cancelTarget.studioTitle}
               </span>
-              ? This demo updates the status locally. Your real cancellation
-              policy should be enforced by the server.
+              . Cancellation is currently a local UI demo and will not update
+              MongoDB.
             </p>
 
             <div className="mt-6 flex gap-3">
@@ -328,13 +465,8 @@ export default function MyBookingsPage() {
         </div>
       )}
 
-      {/* Print-only styling */}
       <style jsx global>{`
         @media print {
-          body {
-            background: white !important;
-          }
-
           body * {
             visibility: hidden;
           }
@@ -348,6 +480,8 @@ export default function MyBookingsPage() {
             display: block !important;
             position: absolute;
             inset: 20px;
+            background: white;
+            color: black;
           }
         }
       `}</style>
