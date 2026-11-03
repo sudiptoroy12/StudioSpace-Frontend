@@ -1,8 +1,9 @@
 
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import { authClient } from "@/lib/auth-client";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 interface Studio {
   _id: string;
@@ -45,8 +46,21 @@ export default function BookingModal({
     if (!startTime) return "";
 
     const [hour, minute] = startTime.split(":").map(Number);
+
+    if (
+      !Number.isInteger(hour) ||
+      !Number.isInteger(minute) ||
+      hour < 0 ||
+      hour > 23 ||
+      minute < 0 ||
+      minute > 59
+    ) {
+      return "";
+    }
+
     const end = hour * 60 + minute + hours * 60;
 
+    // The booking must finish before midnight.
     if (end >= 24 * 60) return "";
 
     return `${String(Math.floor(end / 60)).padStart(2, "0")}:${String(
@@ -54,9 +68,17 @@ export default function BookingModal({
     ).padStart(2, "0")}`;
   }, [startTime, hours]);
 
-  async function handleBooking(event: React.FormEvent<HTMLFormElement>) {
+  async function handleBooking(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (submitting) return;
+
     setError("");
+
+    if (isPending) {
+      setError("Please wait while we check your session.");
+      return;
+    }
 
     if (!session?.user?.email) {
       setError("Please sign in before booking a workspace.");
@@ -76,39 +98,44 @@ export default function BookingModal({
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
     if (!apiUrl) {
-      setError("The API URL is not configured.");
+      setError("The API URL is not configured. Please check your .env.local file.");
       return;
     }
 
     setSubmitting(true);
 
     try {
+      // Get the authentication token for the protected backend route.
+      const token = await getTokenFromClient();
+
+      if (!token) {
+        throw new Error(
+          "Your authentication token was not found. Please sign in again."
+        );
+      }
+
+      // Send only the booking inputs.
+      // The backend determines the user, price, deposit, total, and status.
       const response = await fetch(`${apiUrl}/bookings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          email: session.user.email,
           studioId: studio._id,
-          studioTitle: studio.title,
-          category: studio.category,
-          imageUrl: studio.imageUrl,
-          location: studio.location,
           date,
           startTime,
-          endTime,
-          hours,
-          hourlyRate: studio.hourlyRate,
-          deposit: studio.deposit,
-          total,
-          status: "Pending Host Approval",
-          createdAt: new Date().toISOString(),
+          hours: Number(hours),
         }),
       });
 
+      const result = await response.json().catch(() => null);
+
       if (!response.ok) {
-        throw new Error("Unable to create your booking.");
+        throw new Error(
+          result?.message || "Unable to create your booking. Please try again."
+        );
       }
 
       setSuccess(true);
@@ -137,21 +164,29 @@ export default function BookingModal({
   if (success) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
-        <div className="w-full max-w-md rounded-2xl border border-white/10 bg-neutral-900 p-6 text-white">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="booking-success-title"
+          className="w-full max-w-md rounded-2xl border border-white/10 bg-neutral-900 p-6 text-white"
+        >
           <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-500/15 text-2xl text-green-400">
             ✓
           </div>
 
-          <h2 className="text-2xl font-bold">Booking submitted!</h2>
+          <h2 id="booking-success-title" className="text-2xl font-bold">
+            Booking submitted!
+          </h2>
 
           <p className="mt-3 text-neutral-400">
-            Your booking for {studio.title} has been saved and is pending host
-            approval.
+            Your booking for {studio.title} has been saved successfully.
+            Its current status is Pending, awaiting host approval.
           </p>
 
           <button
+            type="button"
             onClick={onClose}
-            className="mt-6 w-full rounded-xl bg-violet-600 px-5 py-3 font-semibold hover:bg-violet-500"
+            className="mt-6 w-full rounded-xl bg-violet-600 px-5 py-3 font-semibold transition hover:bg-violet-500"
           >
             Done
           </button>
@@ -164,7 +199,9 @@ export default function BookingModal({
     <div
       className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 p-4 backdrop-blur-sm"
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose();
+        if (event.target === event.currentTarget && !submitting) {
+          onClose();
+        }
       }}
     >
       <div
@@ -175,10 +212,14 @@ export default function BookingModal({
       >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm text-violet-300">Reserve your workspace</p>
+            <p className="text-sm text-violet-300">
+              Reserve your workspace
+            </p>
+
             <h2 id="booking-title" className="mt-1 text-2xl font-bold">
               Book {studio.title}
             </h2>
+
             <p className="mt-2 text-sm text-neutral-400">
               {studio.location}
             </p>
@@ -187,8 +228,9 @@ export default function BookingModal({
           <button
             type="button"
             onClick={onClose}
+            disabled={submitting}
             aria-label="Close booking modal"
-            className="rounded-lg px-3 py-2 text-neutral-400 hover:bg-white/10 hover:text-white"
+            className="rounded-lg px-3 py-2 text-neutral-400 transition hover:bg-white/10 hover:text-white disabled:opacity-50"
           >
             ✕
           </button>
@@ -202,44 +244,59 @@ export default function BookingModal({
 
         <form onSubmit={handleBooking} className="mt-6 space-y-5">
           <div>
-            <label htmlFor="booking-date" className="mb-2 block text-sm text-neutral-300">
+            <label
+              htmlFor="booking-date"
+              className="mb-2 block text-sm text-neutral-300"
+            >
               Booking date
             </label>
+
             <input
               id="booking-date"
               type="date"
               min={today}
               required
               value={date}
+              disabled={submitting}
               onChange={(event) => setDate(event.target.value)}
-              className="w-full rounded-xl border border-white/10 bg-neutral-950 px-4 py-3 text-white outline-none focus:border-violet-500"
+              className="w-full rounded-xl border border-white/10 bg-neutral-950 px-4 py-3 text-white outline-none focus:border-violet-500 disabled:opacity-60"
             />
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label htmlFor="booking-time" className="mb-2 block text-sm text-neutral-300">
+              <label
+                htmlFor="booking-time"
+                className="mb-2 block text-sm text-neutral-300"
+              >
                 Start time
               </label>
+
               <input
                 id="booking-time"
                 type="time"
                 required
                 value={startTime}
+                disabled={submitting}
                 onChange={(event) => setStartTime(event.target.value)}
-                className="w-full rounded-xl border border-white/10 bg-neutral-950 px-4 py-3 text-white outline-none focus:border-violet-500"
+                className="w-full rounded-xl border border-white/10 bg-neutral-950 px-4 py-3 text-white outline-none focus:border-violet-500 disabled:opacity-60"
               />
             </div>
 
             <div>
-              <label htmlFor="booking-hours" className="mb-2 block text-sm text-neutral-300">
+              <label
+                htmlFor="booking-hours"
+                className="mb-2 block text-sm text-neutral-300"
+              >
                 Duration
               </label>
+
               <select
                 id="booking-hours"
                 value={hours}
+                disabled={submitting}
                 onChange={(event) => setHours(Number(event.target.value))}
-                className="w-full rounded-xl border border-white/10 bg-neutral-950 px-4 py-3 text-white outline-none focus:border-violet-500"
+                className="w-full rounded-xl border border-white/10 bg-neutral-950 px-4 py-3 text-white outline-none focus:border-violet-500 disabled:opacity-60"
               >
                 {[1, 2, 3, 4, 5, 6, 7, 8].map((hour) => (
                   <option key={hour} value={hour}>
@@ -275,13 +332,11 @@ export default function BookingModal({
               terms with the host.
             </p>
 
-            {endTime && (
+            {endTime ? (
               <p className="mt-3 text-sm text-neutral-400">
                 Booking ends at {endTime}
               </p>
-            )}
-
-            {!endTime && (
+            ) : (
               <p className="mt-3 text-sm text-amber-300">
                 Choose an earlier start time or shorter duration.
               </p>
@@ -289,21 +344,30 @@ export default function BookingModal({
           </div>
 
           {error && (
-            <p role="alert" className="rounded-lg bg-red-500/10 p-3 text-sm text-red-300">
+            <p
+              role="alert"
+              className="rounded-lg bg-red-500/10 p-3 text-sm text-red-300"
+            >
               {error}
             </p>
           )}
 
           <button
             type="submit"
-            disabled={submitting || !session?.user?.email || !endTime}
+            disabled={
+              submitting ||
+              !session?.user?.email ||
+              !endTime ||
+              !date ||
+              date < today
+            }
             className="w-full rounded-xl bg-violet-600 px-5 py-3 font-semibold transition hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {submitting ? "Submitting booking..." : "Confirm Booking"}
           </button>
 
           <p className="text-center text-xs text-neutral-500">
-            Your booking will be submitted for host approval.
+            Your booking will be submitted with Pending status for host approval.
           </p>
         </form>
       </div>

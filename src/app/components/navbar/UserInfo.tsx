@@ -33,7 +33,7 @@ const menuLinks = [
   },
   {
     label: "My Studio Listings",
-    href: "/my-studios",
+    href: "/my-listings",
     icon: Building2,
   },
   {
