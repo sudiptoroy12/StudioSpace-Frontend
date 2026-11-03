@@ -184,7 +184,7 @@ export default function MyListingsPage() {
             </p>
 
             <button
-              onClick={() => router.push("/studios/add")}
+              onClick={() => router.push("/add-studios")}
               className="mt-6 rounded-xl bg-emerald-600 px-5 py-3 font-semibold text-white hover:bg-emerald-700"
             >
               Create a Listing

@@ -59,7 +59,7 @@ const [studios, setStudios] = useState<Studio[]>([]);
 const [isLoading, setIsLoading] = useState(true);
 const [fetchError, setFetchError] = useState("");
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("all");
+
   const [sort, setSort] = useState("newest");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -68,18 +68,16 @@ const [fetchError, setFetchError] = useState("");
   const [favorites, setFavorites] = useState<string[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
 
-// Keep the selected category synchronized with the URL. This makes category
-  // links from the homepage work even when this page is already mounted.
-  useEffect(() => {
-    const requestedCategory = searchParams.get("category") ?? "all";
-    const validCategories = categories.map((item) => item.value);
 
-    setCategory(
-      requestedCategory === "all" || validCategories.includes(requestedCategory)
-        ? requestedCategory
-        : "all",
-    );
-  }, [searchParams]);
+const validCategories = categories.map((item) => item.value);
+
+const requestedCategory = searchParams.get("category") ?? "all";
+
+const category = validCategories.includes(requestedCategory)
+  ? requestedCategory
+  : "all";
+
+
 
   useEffect(() => {
     const controller = new AbortController();
@@ -103,6 +101,8 @@ const [fetchError, setFetchError] = useState("");
 
      
 const responseData = await response.json();
+console.log("API response:", responseData);
+console.log("API URL:", API_URL);
 
 // Support both an array response and { data: [...] } / { studios: [...] }.
 const data = Array.isArray(responseData)
@@ -253,6 +253,7 @@ setStudios(mappedStudios);
       }
     });
   }, [
+    studios,
     search,
     category,
     sort,
@@ -262,19 +263,21 @@ setStudios(mappedStudios);
     favorites,
   ]);
 
-  function selectCategory(value: string) {
-    setCategory(value);
+function selectCategory(value: string) {
+  const params = new URLSearchParams(searchParams.toString());
 
-    const params = new URLSearchParams(searchParams.toString());
-    if (value === "all") {
-      params.delete("category");
-    } else {
-      params.set("category", value);
-    }
-
-    const query = params.toString();
-    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  if (value === "all") {
+    params.delete("category");
+  } else {
+    params.set("category", value);
   }
+
+  const query = params.toString();
+
+  router.replace(query ? `${pathname}?${query}` : pathname, {
+    scroll: false,
+  });
+}
 
   function resetFilters() {
     setSearch("");
