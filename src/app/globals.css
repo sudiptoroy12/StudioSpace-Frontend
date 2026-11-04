@@ -16,3 +16,44 @@ body {
   color: #f5f5f5;
    font-family: Arial, Helvetica, sans-serif;
 }
+
+
+
+@keyframes studio-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.studio-skeleton {
+  background: linear-gradient(
+    90deg,
+    #e5e5e5 25%,
+    #f5f0e8 50%,
+    #e5e5e5 75%
+  );
+  background-size: 200% 100%;
+  animation: studio-shimmer 1.6s ease-in-out infinite;
+}
+
+
+
+/* // not found page styles */
+
+@keyframes studio-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-5deg);
+  }
+
+  50% {
+    transform: translateY(-10px) rotate(-2deg);
+  }
+}
+
+.studio-float {
+  animation: studio-float 4s ease-in-out infinite;
+}
