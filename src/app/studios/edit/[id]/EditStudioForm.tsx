@@ -145,7 +145,7 @@ export default function EditStudioPage() {
         }
 
         const response = await fetch(
-          `${API_URL}/studios/edit/${encodeURIComponent(studioId)}`,
+          `${API_URL}/api/studios/edit/${encodeURIComponent(studioId)}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -274,7 +274,7 @@ export default function EditStudioPage() {
         throw new Error("Please sign in before updating your studio.");
       }
 
-      const response = await fetch(`${API_URL}/studios/${studio._id}`, {
+      const response = await fetch(`${API_URL}/api/studios/${studio._id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

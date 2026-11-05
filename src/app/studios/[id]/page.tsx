@@ -37,7 +37,7 @@ async function getStudio(id: string): Promise<Studio | null> {
     throw new Error("NEXT_PUBLIC_API_URL is not configured.");
   }
 
-  const response = await fetch(`${apiUrl}/studios/${id}`, {
+  const response = await fetch(`${apiUrl}/api/studios/${id}`, {
     cache: "no-store",
   });
 

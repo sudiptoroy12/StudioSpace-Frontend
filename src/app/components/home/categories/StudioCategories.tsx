@@ -127,7 +127,7 @@ export default function StudioCategories() {
           throw new Error("NEXT_PUBLIC_API_URL is not configured.");
         }
 
-        const response = await fetch(`${apiUrl}/studios`, {
+        const response = await fetch(`${apiUrl}/api/studios`, {
           signal: controller.signal,
           cache: "no-store",
         });

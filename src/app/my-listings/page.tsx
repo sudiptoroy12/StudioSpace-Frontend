@@ -48,7 +48,7 @@ export default function MyListingsPage() {
         throw new Error("Authentication token not found.");
       }
 
-      const response = await fetch(`${API_URL}/my-listings`, {
+      const response = await fetch(`${API_URL}/api/my-listings`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -102,7 +102,7 @@ export default function MyListingsPage() {
       }
 
       const response = await fetch(
-        `${API_URL}/studios/${selectedStudio._id}`,
+        `${API_URL}/api/studios/${selectedStudio._id}`,
         {
           method: "DELETE",
           headers: {

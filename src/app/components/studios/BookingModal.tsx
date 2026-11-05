@@ -122,7 +122,7 @@ export default function BookingModal({
         );
       }
 
-      const response = await fetch(`${apiUrl}/bookings`, {
+      const response = await fetch(`${apiUrl}/api/bookings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

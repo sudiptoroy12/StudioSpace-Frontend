@@ -153,7 +153,7 @@ export default function MyBookingsPage() {
         );
       }
 
-      const response = await fetch(`${API_URL}/my-bookings`, {
+      const response = await fetch(`${API_URL}/api/my-bookings`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -245,7 +245,7 @@ export default function MyBookingsPage() {
       }
 
       const response = await fetch(
-        `${API_URL}/bookings/${encodeURIComponent(
+        `${API_URL}/api/bookings/${encodeURIComponent(
           selectedBooking._id
         )}/cancel`,
         {

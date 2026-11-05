@@ -157,7 +157,7 @@ export default function NewStudioPage() {
         throw new Error("Please sign in before publishing your studio.");
       }
 
-      const response = await fetch(`${API_URL}/studios`, {
+      const response = await fetch(`${API_URL}/api/studios`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

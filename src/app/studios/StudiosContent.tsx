@@ -89,7 +89,7 @@ export default function StudiosPage() {
           throw new Error("API URL is not configured.");
         }
 
-        const response = await fetch(`${API_URL}/studios`, {
+        const response = await fetch(`${API_URL}/api/studios`, {
           signal: controller.signal,
         });
 

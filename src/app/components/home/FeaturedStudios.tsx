@@ -65,7 +65,7 @@ export default function FeaturedStudios() {
           throw new Error("API URL is not configured.");
         }
 
-        const response = await fetch(`${apiUrl}/featured-studios`, {
+        const response = await fetch(`${apiUrl}/api/featured-studios`, {
           cache: "no-store",
           signal: controller.signal,
         });
