@@ -13,6 +13,12 @@ Started](#-getting-started) · [Project Structure](#-project-structure)
 
 ------------------------------------------------------------------------
 
+## 🌐 Live Demo
+
+Try the deployed StudioSpace frontend:
+
+**[StudioSpace Live Website](https://studio-space-frontend-liard.vercel.app)**
+
 ## ✨ Overview
 
 **StudioSpace** makes finding and booking a workspace simple. Browse
