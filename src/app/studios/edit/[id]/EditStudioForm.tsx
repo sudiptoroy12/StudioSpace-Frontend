@@ -87,7 +87,7 @@ const initialForm: StudioForm = {
 };
 
 const inputClass =
-  "h-[50px] w-full rounded-xl border border-[#E8DCCB] bg-white px-4 text-sm text-[#211629] outline-none transition placeholder:text-[#A99EAC] focus:border-[#A78BBA] focus:bg-white focus:ring-4 focus:ring-[#A78BBA]/15 dark:border-[#59465F] dark:bg-[#211629] dark:text-[#F7F1E8] dark:placeholder:text-[#A99BAF] dark:focus:border-[#D6B98C] dark:focus:ring-[#D6B98C]/10";
+  "h-[50px] w-full rounded-xl border border-[#E8DCCB] bg-white px-4 text-sm text-[#211629] outline-none transition placeholder:text-[#A99EAC] focus:border-[#A78BBA] focus:bg-white focus:text-black focus:ring-4 focus:ring-[#A78BBA]/15 dark:border-[#59465F] dark:bg-[#211629] dark:text-[#F7F1E8] dark:placeholder:text-[#A99BAF] dark:focus:border-[#D6B98C] dark:focus:ring-[#D6B98C]/10";
 
 const labelClass =
   "mb-2 block text-[13px] font-semibold text-[#39243F] dark:text-[#E8DCCB]";
