@@ -232,7 +232,7 @@ export default function Footer() {
               </a>
 
               <a
-                href="https://www.linkedin.com/"
+                href="https://www.linkedin.com/in/sudipto-roy-00s/"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="LinkedIn"
@@ -315,7 +315,7 @@ export default function Footer() {
             </ul>
 
             <a
-              href="mailto:support@studiospace.example"
+              href="mailto:sudiptoroy1521@gmail.com"
               className="mt-6 inline-flex items-center gap-2 text-sm text-[#C6B8CB] transition hover:text-[#D6B98C]"
             >
               <Mail className="h-4 w-4" />
