@@ -19,16 +19,16 @@ import {
 const exploreLinks = [
   { label: "Explore Studios", href: "/studios" },
   { label: "Photo Studios", href: "/studios?category=photo-studios" },
-  { label: "Sound Stages", href: "/studios?category=sound-stages" },
+  { label: "Film Stages", href: "/studios?category=film-stages" },
   { label: "Podcast Rooms", href: "/studios?category=podcast-rooms" },
   { label: "Music Suites", href: "/studios?category=music-suites" },
   { label: "Art Workshops", href: "/studios?category=art-workshops" },
 ];
 
 const companyLinks = [
-  { label: "About Us", href: "/about" },
+  { label: "About Us", href: "/#about" },
   { label: "How It Works", href: "/#how-it-works" },
-  { label: "Become a Host", href: "/studios/new" },
+  { label: "Become a Host", href: "/add-studios" },
   { label: "Contact Us", href: "/contact" },
 ];
 
@@ -98,7 +98,7 @@ export default function Footer() {
 
       <div className="pointer-events-none absolute -right-40 top-0 h-96 w-96 rounded-full bg-[#D6B98C]/10 blur-[140px]" />
 
-      <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Newsletter */}
         <div className="border-b border-[#D6B98C]/15 py-12 sm:py-16">
           <div className="relative overflow-hidden rounded-3xl border border-[#D6B98C]/20 bg-gradient-to-r from-[#211629] via-[#39243F] to-[#A78BBA] p-6 shadow-xl shadow-black/10 sm:p-9 lg:p-11">

@@ -33,11 +33,11 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 w-full  border-b border-[#D6B98C]/20 bg-gradient-to-r from-[#211629] via-[#39243F] to-[#A78BBA] shadow-md">
       {/* Decorative background elements */}
-      <div className="pointer-events-none absolute -right-10 -top-24 h-64 w-64 rounded-full border border-[#D6B98C]/20" />
+      <div className="hidden sm:block pointer-events-none absolute -right-10 -top-24 h-64 w-64 rounded-full border border-[#D6B98C]/20" />
 
-      <div className="pointer-events-none absolute -right-4 -top-16 h-48 w-48 rounded-full border border-[#D6B98C]/20" />
+      <div className="hidden sm:block pointer-events-none absolute -right-4 -top-16 h-48 w-48 rounded-full border border-[#D6B98C]/20" />
 
-      <div className="pointer-events-none absolute -bottom-20 left-1/3 h-48 w-48 rounded-full bg-[#D6B98C]/10 blur-2xl" />
+      <div className="hidden sm:block pointer-events-none absolute -bottom-20 left-1/3 h-48 w-48 rounded-full bg-[#D6B98C]/10 blur-2xl" />
 
       {/* Main Navbar */}
       <div className="relative mx-auto flex min-h-[72px] max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
