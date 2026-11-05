@@ -19,7 +19,7 @@ import {
 const exploreLinks = [
   { label: "Explore Studios", href: "/studios" },
   { label: "Photo Studios", href: "/studios?category=photo-studios" },
-  { label: "Film Stages", href: "/studios?category=film-stages" },
+  { label: "Sound Stages", href: "/studios?category=sound-stages" },
   { label: "Podcast Rooms", href: "/studios?category=podcast-rooms" },
   { label: "Music Suites", href: "/studios?category=music-suites" },
   { label: "Art Workshops", href: "/studios?category=art-workshops" },

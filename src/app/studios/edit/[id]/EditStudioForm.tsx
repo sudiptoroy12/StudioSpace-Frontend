@@ -23,7 +23,7 @@ import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 const categories = [
   { label: "Photo Studio", value: "photo-studios" },
-  { label: "Film Stage", value: "sound-stages" },
+  { label: "Film Stage", value: "film-stages" },
   { label: "Podcast Room", value: "podcast-rooms" },
   { label: "Music Suite", value: "music-suites" },
   { label: "Art Workshop", value: "art-workshops" },

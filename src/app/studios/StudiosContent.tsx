@@ -36,7 +36,7 @@ type Studio = {
 
 const categories = [
   { label: "Photo Studio", value: "photo-studios" },
-  { label: "Film Stage", value: "sound-stages" },
+  { label: "Sound Stage", value: "sound-stages" },
   { label: "Podcast Room", value: "podcast-rooms" },
   { label: "Music Suite", value: "music-suites" },
   { label: "Art Workshop", value: "art-workshops" },
@@ -124,25 +124,14 @@ export default function StudiosPage() {
             label: "Photo Studio",
           },
 
-          "film stage": {
-            slug: "sound-stages",
-            label: "Film Stage",
-          },
-          "film stages": {
-            slug: "sound-stages",
-            label: "Film Stage",
-          },
+        
           "sound stage": {
             slug: "sound-stages",
-            label: "Film Stage",
-          },
-          "sound stages": {
-            slug: "sound-stages",
-            label: "Film Stage",
+            label: "Sound Stage",
           },
           "sound-stages": {
             slug: "sound-stages",
-            label: "Film Stage",
+            label: "Sound Stage",
           },
 
           "podcast room": {

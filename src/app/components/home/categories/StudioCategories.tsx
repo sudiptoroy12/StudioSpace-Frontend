@@ -6,7 +6,7 @@ import {
   ArrowDownRight,
   ArrowRight,
   Camera,
-  Film,
+  Speaker,
   Mic,
   Music,
   Palette,
@@ -41,16 +41,16 @@ const categories: Category[] = [
     number: "01",
   },
   {
-    name: "Film Stage",
-    slug: "sound-stages",
-    description:
-      "Find production-ready stages, green screens, and spacious filming locations.",
-    icon: Film,
-    accent: "text-violet-600 dark:text-violet-300",
-    iconBackground: "bg-violet-100 dark:bg-violet-500/15",
-    glow: "group-hover:bg-violet-200/50 dark:group-hover:bg-violet-400/15",
-    number: "02",
-  },
+  name: "Sound Stages",
+  slug: "sound-stages",
+  description:
+    "Discover professional sound stages, acoustically treated production spaces, and fully equipped filming environments.",
+  icon: Speaker,
+  accent: "text-violet-600 dark:text-violet-300",
+  iconBackground: "bg-violet-100 dark:bg-violet-500/15",
+  glow: "group-hover:bg-violet-200/50 dark:group-hover:bg-violet-400/15",
+  number: "02",
+},
   {
     name: "Podcast Room",
     slug: "podcast-rooms",
@@ -95,8 +95,7 @@ function normalizeCategory(value: string | undefined): string {
   const aliases: Record<string, string> = {
     "photo-studio": "photo-studios",
     "photo-studios": "photo-studios",
-    "film-stage": "sound-stages",
-    "film-stages": "sound-stages",
+   
     "sound-stage": "sound-stages",
     "sound-stages": "sound-stages",
     "podcast-room": "podcast-rooms",
