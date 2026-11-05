@@ -23,39 +23,39 @@ import "./StudioHeroSlider.css";
 const slides = [
   {
     id: 1,
-    eyebrow: "YOUR SPACE. YOUR CREATIVE JOURNEY.",
-    title: "Find the perfect space to create.",
+    eyebrow: "A SPACE FOR EVERY CREATIVE",
+    title: "Where your next big idea takes shape.",
     description:
-      "Discover inspiring studios for photography, filmmaking, podcasts, and everything your creativity imagines.",
+      "Discover inspiring spaces built for photography, filmmaking, podcasts, and everything in between.",
     image:
-      "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=2400&q=90",
-    alt: "Bright, modern creative workspace",
-    accent: "Spaces that inspire.",
-    highlight: "create",
+      "/StudioSpace Interior.png",
+    alt: "Luxury cinematic studio interior with elegant furniture and warm lighting",
+    highlight: "big idea",
+    number: "01",
   },
   {
     id: 2,
-    eyebrow: "MAKE EVERY FRAME COUNT.",
-    title: "Bring your creative vision to life.",
+    eyebrow: "CREATE SOMETHING REMARKABLE",
+    title: "Your vision deserves the perfect space.",
     description:
-      "From professional photography studios to cinematic production spaces, find the right setting for your next big idea.",
+      "From professional photography studios to cinematic production spaces, find a place that brings your vision to life.",
     image:
-      "https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?auto=format&fit=crop&w=2400&q=90",
-    alt: "Creative photography and video production setup",
-    accent: "Create without limits.",
-    highlight: "vision",
+      "https://areliaspace.com/images/Home%20Page/hero-specialties/hero-landing.webp",
+    alt: "Premium interior with a dramatic staircase and refined architectural lighting",
+    highlight: "perfect space",
+    number: "02",
   },
   {
     id: 3,
-    eyebrow: "TURN YOUR SPACE INTO OPPORTUNITY.",
-    title: "Your studio deserves to be discovered.",
+    eyebrow: "GIVE YOUR SPACE A PURPOSE",
+    title: "Turn your creative space into opportunity.",
     description:
-      "List your creative space, connect with passionate creators, and turn available hours into new opportunities.",
+      "Share your studio with passionate creators, grow your reach, and make every available hour count.",
     image:
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=2400&q=90",
-    alt: "Contemporary creative workspace",
-    accent: "Share your space.",
-    highlight: "discovered",
+      "https://www.nesab.net/images/phases/phase4/phase-main.png",
+    alt: "Elegant contemporary interior with warm natural light and luxury furnishings",
+    highlight: "opportunity",
+    number: "03",
   },
 ];
 
@@ -65,14 +65,14 @@ export default function StudioHeroSliderContent() {
   return (
     <section
       aria-label="Discover creative studios"
-      className="relative overflow-hidden bg-neutral-950"
+      className="relative isolate overflow-hidden bg-[#160F1D]"
     >
       <Swiper
         modules={[Autoplay, EffectFade, Pagination]}
         effect="fade"
         fadeEffect={{ crossFade: true }}
         loop
-        speed={900}
+        speed={1000}
         autoplay={{
           delay: 5500,
           disableOnInteraction: false,
@@ -86,7 +86,7 @@ export default function StudioHeroSliderContent() {
       >
         {slides.map((slide, slideIndex) => (
           <SwiperSlide key={slide.id}>
-            <div className="relative min-h-[560px] sm:min-h-[620px] lg:min-h-[690px]">
+            <div className="relative min-h-[650px] sm:min-h-[690px] lg:min-h-[760px]">
               {/* Background image */}
               <Image
                 src={slide.image}
@@ -94,80 +94,107 @@ export default function StudioHeroSliderContent() {
                 fill
                 priority={slideIndex === 0}
                 sizes="100vw"
-                className="object-cover"
+                quality={95}
+                className="object-cover object-center"
               />
 
-              {/* Image overlays */}
-              <div className="absolute inset-0 bg-neutral-950/55" />
-              <div className="absolute inset-0 bg-gradient-to-r from-neutral-950 via-neutral-950/75 to-neutral-950/10" />
-              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/70 via-transparent to-neutral-950/10" />
+              {/* Soft cinematic plum gradient */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#160F1D]/85 via-[#211629]/55 to-[#211629]/10" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#160F1D]/65 via-transparent to-[#160F1D]/10" />
 
-              {/* Decorative glow */}
-              <div className="absolute -left-32 top-1/4 h-80 w-80 rounded-full bg-violet-600/20 blur-[120px]" />
+              {/* Subtle ambient lighting */}
+              <div className="absolute -left-40 top-20 h-96 w-96 rounded-full bg-[#A78BBA]/10 blur-[130px]" />
+              <div className="absolute -right-32 bottom-10 h-80 w-80 rounded-full bg-[#D6B98C]/10 blur-[120px]" />
 
-              {/* Slide content */}
-              <div className="relative z-10 mx-auto flex min-h-[560px] max-w-7xl items-center px-5 py-24 sm:min-h-[620px] sm:px-8 lg:min-h-[690px] lg:px-12">
-                <div className="max-w-3xl">
-                  <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold tracking-[0.16em] text-violet-200 backdrop-blur-md sm:text-sm">
-                    <Sparkles size={16} aria-hidden="true" />
-                    <span>{slide.eyebrow}</span>
+              {/* Main content */}
+              <div className="relative z-10 mx-auto flex min-h-[650px] max-w-7xl items-center  pb-28 pt-24 sm:min-h-[690px]  lg:min-h-[760px] px-4 sm:px-6 lg:px-8 ">
+                <div className="w-full max-w-4xl">
+                  {/* Top badge */}
+                  <div className="mb-7 inline-flex items-center gap-3 rounded-full border border-[#D6B98C]/35 bg-[#211629]/35 px-4 py-2.5 backdrop-blur-md">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#D6B98C]/15">
+                      <Sparkles
+                        size={15}
+                        className="text-[#D6B98C]"
+                      />
+                    </span>
+
+                    <span className="text-[10px] font-bold tracking-[0.2em] text-[#E8D4B2] sm:text-xs">
+                      {slide.eyebrow}
+                    </span>
                   </div>
 
-                  <h1 className="max-w-3xl text-4xl font-extrabold leading-[1.12] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
-                    {slide.title.split(" ").map((word, index) => {
-                      const normalizedWord = word
+                  {/* Main heading */}
+                  <h1 className="max-w-4xl text-[clamp(2.7rem,7vw,5.8rem)] font-extrabold leading-[1.06] tracking-[-0.045em] text-[#F7F1E8]">
+                    {slide.title.split(" ").map((word, index, words) => {
+                      const normalized = word
                         .toLowerCase()
                         .replace(/[.,!?]/g, "");
+
+                      const highlightedWords =
+                        slide.highlight.split(" ");
+
+                      const isHighlighted =
+                        highlightedWords.includes(normalized);
 
                       return (
                         <span
                           key={`${slide.id}-${index}`}
                           className={
-                            normalizedWord === slide.highlight
-                              ? "text-violet-400"
+                            isHighlighted
+                              ? "text-[#D6B98C]"
                               : undefined
                           }
                         >
-                          {word}{" "}
+                          {word}
+                          {index !== words.length - 1 ? " " : ""}
                         </span>
                       );
                     })}
                   </h1>
 
-                  <p className="mt-6 max-w-2xl text-base leading-8 text-neutral-200 sm:text-lg">
+                  {/* Description */}
+                  <p className="mt-7 max-w-2xl text-sm leading-7 text-[#F7F1E8]/90 sm:text-base sm:leading-8 lg:text-lg">
                     {slide.description}
                   </p>
 
-                  {/* CTA buttons */}
-                  <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
+                  {/* Action buttons */}
+                  <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center">
                     <Link
                       href="/studios"
-                      className="group inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-violet-950/30 transition duration-300 hover:-translate-y-0.5 hover:bg-violet-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950 sm:text-base"
+                      className="group inline-flex min-h-14 items-center justify-center gap-3 rounded-xl bg-[#D6B98C] px-7 py-4 text-sm font-bold text-[#211629] shadow-[0_12px_40px_rgba(214,185,140,0.15)] transition-all duration-300 hover:-translate-y-1 hover:bg-[#E8D4B2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D6B98C] focus-visible:ring-offset-2 focus-visible:ring-offset-[#211629] sm:text-base"
                     >
                       Explore Studios
                       <ArrowRight
                         size={19}
-                        aria-hidden="true"
-                        className="transition-transform group-hover:translate-x-1"
+                        className="transition-transform duration-300 group-hover:translate-x-1"
                       />
                     </Link>
 
                     <Link
-                      href="/studios/new"
-                      className="group inline-flex items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/10 px-6 py-4 text-sm font-bold text-white backdrop-blur-md transition duration-300 hover:-translate-y-0.5 hover:border-white/50 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:text-base"
+                      href="/add-studios"
+                      className="group inline-flex min-h-14 items-center justify-center gap-3 rounded-xl border border-[#F7F1E8]/40 bg-[#F7F1E8]/10 px-7 py-4 text-sm font-semibold text-[#F7F1E8] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-[#D6B98C]/70 hover:bg-[#39243F]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D6B98C] sm:text-base"
                     >
-                      Host Your Space
+                      List Your Studio
                       <ArrowUpRight
                         size={19}
-                        aria-hidden="true"
-                        className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                        className="transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1"
                       />
                     </Link>
                   </div>
 
-                  <div className="mt-10 flex items-center gap-3 text-sm text-neutral-300">
-                    <span className="h-px w-10 bg-violet-400" />
-                    <span>{slide.accent}</span>
+                  {/* Bottom tagline */}
+                  <div className="mt-12 flex items-center gap-4">
+                    <div className="h-px w-12 bg-[#D6B98C]" />
+                    <span className="text-xs font-medium tracking-widest text-[#E8D4B2] sm:text-sm">
+                      {slide.number} / 03
+                    </span>
+                    <span className="text-xs text-[#F7F1E8]/70 sm:text-sm">
+                      {slideIndex === 0
+                        ? "Spaces that inspire."
+                        : slideIndex === 1
+                          ? "Create without limits."
+                          : "Share your space."}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -176,26 +203,28 @@ export default function StudioHeroSliderContent() {
         ))}
       </Swiper>
 
-      {/* Custom navigation arrows */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-7 z-20">
-        <div className="mx-auto flex max-w-7xl justify-end gap-2 px-5 sm:px-8 lg:px-12">
-          <button
-            type="button"
-            aria-label="Previous slide"
-            onClick={() => swiperRef.current?.slidePrev()}
-            className="pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:border-violet-400 hover:bg-violet-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
-          >
-            <ChevronLeft size={22} />
-          </button>
+      {/* Slider navigation */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-8 z-20">
+        <div className="mx-auto flex max-w-7xl items-center justify-end px-5 sm:px-8 lg:px-12">
+          <div className="ml-auto flex gap-3">
+            <button
+              type="button"
+              aria-label="Previous slide"
+              onClick={() => swiperRef.current?.slidePrev()}
+              className="pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full border border-[#D6B98C]/35 bg-[#211629]/55 text-[#F7F1E8] backdrop-blur-xl transition-all duration-300 hover:border-[#D6B98C] hover:bg-[#39243F] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D6B98C]"
+            >
+              <ChevronLeft size={21} />
+            </button>
 
-          <button
-            type="button"
-            aria-label="Next slide"
-            onClick={() => swiperRef.current?.slideNext()}
-            className="pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:border-violet-400 hover:bg-violet-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
-          >
-            <ChevronRight size={22} />
-          </button>
+            <button
+              type="button"
+              aria-label="Next slide"
+              onClick={() => swiperRef.current?.slideNext()}
+              className="pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full border border-[#D6B98C]/35 bg-[#211629]/55 text-[#F7F1E8] backdrop-blur-xl transition-all duration-300 hover:border-[#D6B98C] hover:bg-[#39243F] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D6B98C]"
+            >
+              <ChevronRight size={21} />
+            </button>
+          </div>
         </div>
       </div>
     </section>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Aperture } from "lucide-react";
+import { PanelsTopLeft } from "lucide-react";
 import { usePathname } from "next/navigation";
 import UserInfo from "./UserInfo";
 import ThemeToggle from "../theme/ThemeToggle";
@@ -16,47 +16,50 @@ const navLinks = [
 const Navbar = () => {
   const pathname = usePathname();
 
- const isActive = (href: string) => {
-  if (href === "/") {
-    return pathname === "/";
-  }
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    if (href === "/#how-it-works" || href === "/#about") return false;
 
-  if (href === "/#how-it-works" || href === "/#about") {
-    return false;
-  }
-
-  return pathname === href || pathname.startsWith(`${href}/`);
-};
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
 
   const getNavClass = (active: boolean) =>
-    `relative shrink-0 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-200 ${
+    `relative shrink-0 whitespace-nowrap rounded-xl px-3 py-2 text-sm font-semibold transition-all duration-200 ${
       active
-        ? "bg-violet-50 text-violet-700 dark:bg-violet-500/15 dark:text-violet-300"
-        : "text-neutral-600 hover:bg-neutral-50 hover:text-violet-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-violet-300"
+        ? "bg-white/15 text-[#D6B98C]"
+        : "text-[#F7F1E8]/85 hover:bg-white/10 hover:text-[#D6B98C]"
     }`;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-neutral-200/80 bg-white/95 shadow-sm backdrop-blur-md transition-colors duration-300 dark:border-neutral-800 dark:bg-neutral-950/95">
-      <div className="mx-auto flex min-h-[76px] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 w-full  border-b border-[#D6B98C]/20 bg-gradient-to-r from-[#211629] via-[#39243F] to-[#A78BBA] shadow-md">
+      {/* Decorative background elements */}
+      <div className="pointer-events-none absolute -right-10 -top-24 h-64 w-64 rounded-full border border-[#D6B98C]/20" />
+
+      <div className="pointer-events-none absolute -right-4 -top-16 h-48 w-48 rounded-full border border-[#D6B98C]/20" />
+
+      <div className="pointer-events-none absolute -bottom-20 left-1/3 h-48 w-48 rounded-full bg-[#D6B98C]/10 blur-2xl" />
+
+      {/* Main Navbar */}
+      <div className="relative mx-auto flex min-h-[72px] max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link
           href="/"
-          className="flex shrink-0 items-center gap-2.5"
+          className="group flex shrink-0 items-center gap-2.5"
           aria-label="StudioSpace home"
         >
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-600 text-white shadow-sm shadow-violet-200 transition-colors dark:shadow-violet-950/40">
-            <Aperture size={27} strokeWidth={1.8} />
+          {/* Logo Icon */}
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#D6B98C] text-[#211629] shadow-md shadow-black/10 transition-all duration-300 group-hover:rotate-6 group-hover:scale-105 sm:h-11 sm:w-11">
+            <PanelsTopLeft size={26} strokeWidth={2} />
           </span>
 
-          <span className="text-xl font-bold tracking-tight text-neutral-900 transition-colors dark:text-white sm:text-2xl">
+          {/* Brand Name */}
+          <span className="text-lg font-extrabold tracking-tight text-[#F7F1E8] sm:text-2xl">
             Studio
-            <span className="text-violet-600 dark:text-violet-400">
-              Space
-            </span>
+            <span className="text-[#D6B98C]">Space</span>
           </span>
         </Link>
 
-        {/* Main navigation */}
+        {/* Desktop Navigation */}
         <nav
           aria-label="Main navigation"
           className="hidden items-center gap-1 lg:flex"
@@ -74,24 +77,24 @@ const Navbar = () => {
                 {link.label}
 
                 {active && (
-                  <span className="absolute inset-x-3 -bottom-[17px] h-0.5 rounded-full bg-violet-600 dark:bg-violet-400" />
+                  <span className="absolute inset-x-3 -bottom-[17px] h-[3px] rounded-full bg-[#D6B98C]" />
                 )}
               </Link>
             );
           })}
         </nav>
 
-        {/* Theme toggle and authentication / user menu */}
-        <div className="flex shrink-0 items-center gap-2">
+        {/* Actions */}
+        <div className="flex shrink-0 items-center gap-2 ">
           <ThemeToggle />
           <UserInfo />
         </div>
       </div>
 
-      {/* Compact navigation for mobile and tablet */}
+      {/* Mobile and Tablet Navigation */}
       <nav
         aria-label="Mobile navigation"
-        className="flex items-center gap-1 overflow-x-auto border-t border-neutral-100 px-3 py-2 transition-colors duration-300 dark:border-neutral-800 lg:hidden"
+        className="relative flex items-center gap-1 overflow-x-auto border-t border-white/15 px-3 py-2 lg:hidden"
       >
         {navLinks.map((link) => {
           const active = isActive(link.href);
@@ -104,6 +107,10 @@ const Navbar = () => {
               className={getNavClass(active)}
             >
               {link.label}
+
+              {active && (
+                <span className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-[#D6B98C]" />
+              )}
             </Link>
           );
         })}

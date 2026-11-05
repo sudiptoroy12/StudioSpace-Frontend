@@ -135,25 +135,25 @@ export default function MyListingsPage() {
   // Loading state
   if (isPending || loading) {
     return (
-      <main className="min-h-screen bg-[#faf9f6] px-5 py-12 sm:px-8">
+      <main className="min-h-screen bg-[#F7F1E8] px-5 py-12 dark:bg-[#211629] sm:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-10 space-y-3">
-            <div className="h-4 w-32 animate-pulse rounded bg-amber-100" />
-            <div className="h-10 w-64 animate-pulse rounded-lg bg-neutral-200" />
-            <div className="h-5 w-80 max-w-full animate-pulse rounded bg-neutral-200" />
+            <div className="h-4 w-32 animate-pulse rounded bg-[#D6B98C]/30 dark:bg-[#A78BBA]/20" />
+            <div className="h-10 w-64 animate-pulse rounded-lg bg-[#E8DCCB] dark:bg-[#39243F]" />
+            <div className="h-5 w-80 max-w-full animate-pulse rounded bg-[#E8DCCB] dark:bg-[#39243F]" />
           </div>
 
           <div className="space-y-4">
             {Array.from({ length: 4 }).map((_, index) => (
               <div
                 key={index}
-                className="flex flex-col gap-5 rounded-3xl border border-neutral-200 bg-white p-5 sm:flex-row"
+                className="flex flex-col gap-5 rounded-3xl border border-[#E8DCCB] bg-white p-5 dark:border-[#59465F] dark:bg-[#39243F] sm:flex-row"
               >
-                <div className="h-48 w-full animate-pulse rounded-2xl bg-neutral-200 sm:h-32 sm:w-44" />
+                <div className="h-48 w-full animate-pulse rounded-2xl bg-[#E8DCCB] dark:bg-[#211629] sm:h-32 sm:w-44" />
                 <div className="flex-1 space-y-4">
-                  <div className="h-6 w-1/2 animate-pulse rounded bg-neutral-200" />
-                  <div className="h-4 w-2/3 animate-pulse rounded bg-neutral-200" />
-                  <div className="h-4 w-1/3 animate-pulse rounded bg-neutral-200" />
+                  <div className="h-6 w-1/2 animate-pulse rounded bg-[#E8DCCB] dark:bg-[#211629]" />
+                  <div className="h-4 w-2/3 animate-pulse rounded bg-[#E8DCCB] dark:bg-[#211629]" />
+                  <div className="h-4 w-1/3 animate-pulse rounded bg-[#E8DCCB] dark:bg-[#211629]" />
                 </div>
               </div>
             ))}
@@ -168,28 +168,28 @@ export default function MyListingsPage() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#faf9f6] px-4 py-12 sm:px-6 lg:px-8">
+    <main className="relative min-h-screen overflow-hidden bg-[#F7F1E8] px-4 py-12 dark:bg-[#211629] sm:px-6 lg:px-8">
       {/* Background decoration */}
-      <div className="pointer-events-none absolute -right-40 top-10 h-96 w-96 rounded-full bg-amber-100/50 blur-3xl" />
-      <div className="pointer-events-none absolute -left-40 bottom-0 h-80 w-80 rounded-full bg-orange-100/40 blur-3xl" />
+      <div className="pointer-events-none absolute -right-40 top-10 h-96 w-96 rounded-full bg-[#D6B98C]/20 blur-3xl dark:bg-[#A78BBA]/10" />
+      <div className="pointer-events-none absolute -left-40 bottom-0 h-80 w-80 rounded-full bg-[#A78BBA]/15 blur-3xl dark:bg-[#39243F]/60" />
 
       <div className="relative mx-auto max-w-6xl">
         {/* Page header */}
         <div className="mb-10 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
           <div>
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-amber-200 bg-white px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-amber-700 shadow-sm">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#D6B98C]/50 bg-white px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#39243F] shadow-sm dark:border-[#A78BBA]/30 dark:bg-[#39243F] dark:text-[#D6B98C]">
               <Building2 size={14} />
               StudioSpace Dashboard
             </div>
 
-            <h1 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl">
+            <h1 className="text-3xl font-bold tracking-tight text-[#211629] dark:text-[#F7F1E8] sm:text-4xl">
               My Listings
-              <span className="ml-3 inline-flex h-8 min-w-8 items-center justify-center rounded-full bg-amber-100 px-2 text-sm font-bold text-amber-700">
+              <span className="ml-3 inline-flex h-8 min-w-8 items-center justify-center rounded-full bg-[#D6B98C]/30 px-2 text-sm font-bold text-[#39243F] dark:bg-[#D6B98C]/15 dark:text-[#D6B98C]">
                 {studios.length}
               </span>
             </h1>
 
-            <p className="mt-3 max-w-xl text-sm leading-6 text-neutral-500 sm:text-base">
+            <p className="mt-3 max-w-xl text-sm leading-6 text-[#766B7D] dark:text-[#C6B8CB] sm:text-base">
               Manage your creative spaces, update your studio information,
               and keep your listings looking their best.
             </p>
@@ -197,7 +197,7 @@ export default function MyListingsPage() {
 
           <button
             onClick={() => router.push("/add-studios")}
-            className="group inline-flex items-center justify-center gap-2 rounded-full bg-neutral-900 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-neutral-900/10 transition-all duration-300 hover:-translate-y-1 hover:bg-amber-600"
+            className="group inline-flex items-center justify-center gap-2 rounded-full bg-[#39243F] px-6 py-3.5 text-sm font-semibold text-[#F7F1E8] shadow-lg shadow-[#211629]/10 transition-all duration-300 hover:-translate-y-1 hover:bg-[#211629] dark:bg-[#D6B98C] dark:text-[#211629] dark:shadow-black/20 dark:hover:bg-[#E3CBA5]"
           >
             <Plus size={18} />
             Add New Studio
@@ -211,38 +211,39 @@ export default function MyListingsPage() {
         {/* Listing heading */}
         <div className="mb-5 flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-bold text-neutral-900">
+            <h2 className="text-lg font-bold text-[#211629] dark:text-[#F7F1E8]">
               Your studio spaces
             </h2>
-            <p className="mt-1 text-sm text-neutral-500">
-              {studios.length} {studios.length === 1 ? "listing" : "listings"} available
+            <p className="mt-1 text-sm text-[#766B7D] dark:text-[#C6B8CB]">
+              {studios.length}{" "}
+              {studios.length === 1 ? "listing" : "listings"} available
             </p>
           </div>
 
-          <span className="hidden rounded-full border border-neutral-200 bg-white px-4 py-2 text-xs font-semibold text-neutral-500 sm:inline-flex">
+          <span className="hidden rounded-full border border-[#E8DCCB] bg-white px-4 py-2 text-xs font-semibold text-[#766B7D] dark:border-[#59465F] dark:bg-[#39243F] dark:text-[#C6B8CB] sm:inline-flex">
             Recently added
           </span>
         </div>
 
         {/* Empty state */}
         {studios.length === 0 ? (
-          <div className="rounded-[2rem] border border-dashed border-neutral-300 bg-white px-6 py-20 text-center shadow-sm">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-50 text-amber-600">
+          <div className="rounded-[2rem] border border-dashed border-[#D6B98C] bg-white px-6 py-20 text-center shadow-sm dark:border-[#59465F] dark:bg-[#39243F]">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#D6B98C]/20 text-[#39243F] dark:bg-[#D6B98C]/15 dark:text-[#D6B98C]">
               <Camera size={30} />
             </div>
 
-            <h2 className="mt-6 text-xl font-bold text-neutral-900">
+            <h2 className="mt-6 text-xl font-bold text-[#211629] dark:text-[#F7F1E8]">
               No studio listings yet
             </h2>
 
-            <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-neutral-500">
+            <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-[#766B7D] dark:text-[#C6B8CB]">
               Your creative spaces deserve to be discovered. Add your first
               studio and start welcoming creators.
             </p>
 
             <button
               onClick={() => router.push("/add-studios")}
-              className="mt-7 inline-flex items-center gap-2 rounded-full bg-neutral-900 px-6 py-3 font-semibold text-white transition hover:bg-amber-600"
+              className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#39243F] px-6 py-3 font-semibold text-[#F7F1E8] transition hover:bg-[#211629] dark:bg-[#D6B98C] dark:text-[#211629] dark:hover:bg-[#E3CBA5]"
             >
               <Plus size={18} />
               Create a Listing
@@ -254,11 +255,11 @@ export default function MyListingsPage() {
             {studios.map((studio) => (
               <article
                 key={studio._id}
-                className="group overflow-hidden rounded-3xl border border-neutral-200/80 bg-white p-4 shadow-[0_5px_25px_rgba(0,0,0,0.025)] transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-200 hover:shadow-[0_15px_40px_rgba(0,0,0,0.07)] sm:p-5"
+                className="group overflow-hidden rounded-3xl border border-[#E8DCCB] bg-white p-4 shadow-[0_5px_25px_rgba(33,22,41,0.04)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#D6B98C] hover:shadow-[0_15px_40px_rgba(33,22,41,0.09)] dark:border-[#59465F] dark:bg-[#39243F] dark:shadow-black/10 dark:hover:border-[#A78BBA] dark:hover:shadow-black/20 sm:p-5"
               >
                 <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
                   {/* Studio image */}
-                  <div className="relative h-52 w-full shrink-0 overflow-hidden rounded-2xl bg-neutral-100 sm:h-36 sm:w-48 lg:h-40 lg:w-56">
+                  <div className="relative h-52 w-full shrink-0 overflow-hidden rounded-2xl bg-[#E8DCCB] dark:bg-[#211629] sm:h-36 sm:w-48 lg:h-40 lg:w-56">
                     {studio.imageUrl ? (
                       <Image
                         src={studio.imageUrl}
@@ -269,12 +270,12 @@ export default function MyListingsPage() {
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                     ) : (
-                      <div className="flex h-full items-center justify-center text-neutral-400">
+                      <div className="flex h-full items-center justify-center text-[#A78BBA]">
                         <Camera size={36} />
                       </div>
                     )}
 
-                    <div className="absolute left-3 top-3 rounded-full border border-white/50 bg-white/90 px-3 py-1.5 text-[11px] font-bold text-amber-700 shadow-sm backdrop-blur">
+                    <div className="absolute left-3 top-3 rounded-full border border-white/50 bg-[#F7F1E8]/95 px-3 py-1.5 text-[11px] font-bold text-[#39243F] shadow-sm backdrop-blur dark:border-[#A78BBA]/30 dark:bg-[#211629]/90 dark:text-[#D6B98C]">
                       {studio.category}
                     </div>
                   </div>
@@ -282,34 +283,40 @@ export default function MyListingsPage() {
                   {/* Studio information */}
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-3">
-                      <h3 className="truncate text-xl font-bold tracking-tight text-neutral-900 transition-colors group-hover:text-amber-700 sm:text-2xl">
+                      <h3 className="truncate text-xl font-bold tracking-tight text-[#211629] transition-colors group-hover:text-[#A78BBA] dark:text-[#F7F1E8] dark:group-hover:text-[#D6B98C] sm:text-2xl">
                         {studio.title}
                       </h3>
 
-                      <span className="rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700">
+                      <span className="rounded-full bg-[#A78BBA]/15 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#39243F] dark:bg-[#A78BBA]/20 dark:text-[#D6B98C]">
                         Your listing
                       </span>
                     </div>
 
-                    <div className="mt-3 flex flex-col gap-2 text-sm text-neutral-500 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5">
+                    <div className="mt-3 flex flex-col gap-2 text-sm text-[#766B7D] dark:text-[#C6B8CB] sm:flex-row sm:flex-wrap sm:items-center sm:gap-5">
                       <span className="flex items-center gap-2">
-                        <MapPin size={16} className="shrink-0 text-amber-600" />
+                        <MapPin
+                          size={16}
+                          className="shrink-0 text-[#A78BBA] dark:text-[#D6B98C]"
+                        />
                         <span className="line-clamp-1">{studio.location}</span>
                       </span>
 
                       <span className="flex items-center gap-2">
-                        <Users size={16} className="shrink-0 text-amber-600" />
+                        <Users
+                          size={16}
+                          className="shrink-0 text-[#A78BBA] dark:text-[#D6B98C]"
+                        />
                         Capacity: {studio.capacity}
                       </span>
                     </div>
 
                     <div className="mt-5">
-                      <span className="text-xs font-medium uppercase tracking-wider text-neutral-400">
+                      <span className="text-xs font-medium uppercase tracking-wider text-[#A092A7] dark:text-[#B6A5BC]">
                         Hourly rate
                       </span>
-                      <p className="mt-1 text-2xl font-bold tracking-tight text-neutral-900">
+                      <p className="mt-1 text-2xl font-bold tracking-tight text-[#211629] dark:text-[#F7F1E8]">
                         ${studio.hourlyRate}
-                        <span className="ml-1 text-sm font-medium text-neutral-400">
+                        <span className="ml-1 text-sm font-medium text-[#A092A7] dark:text-[#B6A5BC]">
                           / hour
                         </span>
                       </p>
@@ -317,10 +324,10 @@ export default function MyListingsPage() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex flex-row flex-wrap items-center gap-2 border-t border-neutral-100 pt-4 sm:w-40 sm:shrink-0 sm:flex-col sm:border-l sm:border-t-0 sm:pl-5 sm:pt-0">
+                  <div className="flex flex-row flex-wrap items-center gap-2 border-t border-[#E8DCCB] pt-4 dark:border-[#59465F] sm:w-40 sm:shrink-0 sm:flex-col sm:border-l sm:border-t-0 sm:pl-5 sm:pt-0">
                     <Link
                       href={`/studios/${studio._id}`}
-                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-neutral-900 px-4 py-3 text-xs font-semibold text-white transition hover:bg-amber-600 sm:w-full"
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#39243F] px-4 py-3 text-xs font-semibold text-[#F7F1E8] transition hover:bg-[#211629] dark:bg-[#D6B98C] dark:text-[#211629] dark:hover:bg-[#E3CBA5] sm:w-full"
                     >
                       View Details
                       <ArrowUpRight size={15} />
@@ -330,7 +337,7 @@ export default function MyListingsPage() {
                       onClick={() =>
                         router.push(`/studios/edit/${studio._id}`)
                       }
-                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-neutral-200 px-4 py-3 text-xs font-semibold text-neutral-700 transition hover:border-amber-300 hover:bg-amber-50 hover:text-amber-700 sm:w-full"
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-[#D6B98C]/60 px-4 py-3 text-xs font-semibold text-[#39243F] transition hover:border-[#A78BBA] hover:bg-[#A78BBA]/10 hover:text-[#211629] dark:border-[#A78BBA]/40 dark:text-[#F7F1E8] dark:hover:border-[#D6B98C] dark:hover:bg-[#D6B98C]/10 dark:hover:text-[#D6B98C] sm:w-full"
                     >
                       <Edit size={15} />
                       Update
@@ -338,7 +345,7 @@ export default function MyListingsPage() {
 
                     <button
                       onClick={() => setSelectedStudio(studio)}
-                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-red-100 px-4 py-3 text-xs font-semibold text-red-600 transition hover:border-red-200 hover:bg-red-50 sm:w-full"
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-red-200 px-4 py-3 text-xs font-semibold text-red-600 transition hover:border-red-300 hover:bg-red-50 dark:border-red-400/20 dark:text-red-300 dark:hover:border-red-400/40 dark:hover:bg-red-400/10 sm:w-full"
                     >
                       <Trash2 size={15} />
                       Delete
@@ -353,15 +360,15 @@ export default function MyListingsPage() {
 
       {/* Delete confirmation modal */}
       {selectedStudio && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#211629]/60 p-4 backdrop-blur-sm">
           <div
             role="dialog"
             aria-modal="true"
             aria-labelledby="delete-title"
-            className="w-full max-w-md rounded-3xl border border-neutral-100 bg-white p-6 shadow-2xl sm:p-8"
+            className="w-full max-w-md rounded-3xl border border-[#E8DCCB] bg-[#F7F1E8] p-6 shadow-2xl dark:border-[#59465F] dark:bg-[#39243F] sm:p-8"
           >
             <div className="flex items-start justify-between">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 text-red-600">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-100 text-red-600 dark:bg-red-400/10 dark:text-red-300">
                 <Trash2 size={23} />
               </div>
 
@@ -369,7 +376,7 @@ export default function MyListingsPage() {
                 onClick={() => setSelectedStudio(null)}
                 disabled={deletingId !== null}
                 aria-label="Close confirmation"
-                className="rounded-full p-2 text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-800"
+                className="rounded-full p-2 text-[#A092A7] transition hover:bg-[#E8DCCB] hover:text-[#211629] disabled:opacity-50 dark:text-[#C6B8CB] dark:hover:bg-[#211629] dark:hover:text-[#F7F1E8]"
               >
                 <X size={20} />
               </button>
@@ -377,14 +384,14 @@ export default function MyListingsPage() {
 
             <h2
               id="delete-title"
-              className="mt-6 text-xl font-bold text-neutral-900"
+              className="mt-6 text-xl font-bold text-[#211629] dark:text-[#F7F1E8]"
             >
               Delete this studio?
             </h2>
 
-            <p className="mt-3 text-sm leading-7 text-neutral-500">
+            <p className="mt-3 text-sm leading-7 text-[#766B7D] dark:text-[#C6B8CB]">
               Are you sure you want to delete{" "}
-              <strong className="text-neutral-800">
+              <strong className="text-[#39243F] dark:text-[#D6B98C]">
                 {selectedStudio.title}
               </strong>
               ? This action cannot be undone.
@@ -394,7 +401,7 @@ export default function MyListingsPage() {
               <button
                 onClick={() => setSelectedStudio(null)}
                 disabled={deletingId !== null}
-                className="flex-1 rounded-full border border-neutral-200 px-4 py-3 text-sm font-semibold text-neutral-700 transition hover:bg-neutral-50 disabled:opacity-50"
+                className="flex-1 rounded-full border border-[#D6B98C]/60 px-4 py-3 text-sm font-semibold text-[#39243F] transition hover:bg-[#E8DCCB] disabled:opacity-50 dark:border-[#A78BBA]/40 dark:text-[#F7F1E8] dark:hover:bg-[#211629]"
               >
                 Cancel
               </button>

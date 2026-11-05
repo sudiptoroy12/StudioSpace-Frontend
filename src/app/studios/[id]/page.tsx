@@ -1,7 +1,15 @@
-
 import { Suspense } from "react";
 import StudioBookingCard from "@/app/components/studios/StudioBookingCard";
 import { notFound } from "next/navigation";
+import {
+  MapPin,
+  Users,
+  Wallet,
+  CheckCircle2,
+  Star,
+  UserRound,
+  Monitor,
+} from "lucide-react";
 
 interface Studio {
   _id: string;
@@ -61,15 +69,13 @@ async function StudioDetails({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  // Read dynamic route params inside Suspense.
   const { id } = await params;
 
-  // Validate the MongoDB ObjectId.
+  // Validate MongoDB ObjectId.
   if (!/^[a-f\d]{24}$/i.test(id)) {
     notFound();
   }
 
-  // Fetch studio details inside Suspense.
   const studio = await getStudio(id);
 
   if (!studio) {
@@ -77,84 +83,122 @@ async function StudioDetails({
   }
 
   return (
-    <main className="min-h-screen bg-neutral-950 px-4 py-10 text-white sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
-        {/* Header */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <main className="relative min-h-screen overflow-hidden bg-[#F7F1E8] px-4 py-10 text-[#211629] transition-colors duration-300 dark:bg-[#211629] dark:text-[#F7F1E8] sm:px-6 lg:px-8">
+      {/* Background glow */}
+      <div className="pointer-events-none absolute -right-40 top-10 h-96 w-96 rounded-full bg-[#D6B98C]/20 blur-3xl dark:bg-[#A78BBA]/10" />
+      <div className="pointer-events-none absolute -left-40 bottom-0 h-80 w-80 rounded-full bg-[#A78BBA]/15 blur-3xl dark:bg-[#39243F]/60" />
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Studio header */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <span className="rounded-full bg-violet-500/15 px-3 py-1 text-sm text-violet-300">
+            <span className="inline-flex items-center rounded-full border border-[#D6B98C]/40 bg-[#D6B98C]/15 px-3 py-1.5 text-sm font-semibold capitalize text-[#80613D] dark:text-[#D6B98C]">
               {studio.category.replaceAll("-", " ")}
             </span>
 
-            <h1 className="mt-4 text-3xl font-bold sm:text-4xl">
+            <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-[#211629] dark:text-[#F7F1E8] sm:text-4xl">
               {studio.title}
             </h1>
 
-            <p className="mt-3 text-neutral-400">
+            <p className="mt-3 flex items-center gap-2 text-sm text-[#766B7D] dark:text-[#C6B8CB] sm:text-base">
+              <MapPin className="h-4 w-4 shrink-0 text-[#A78BBA]" />
               {studio.location}
             </p>
           </div>
 
-          <p className="text-xl font-bold">
-            ৳{studio.hourlyRate}
-            <span className="text-sm font-normal text-neutral-400">
-              {" "}/ hour
-            </span>
-          </p>
+          <div className="rounded-2xl border border-[#D6B98C]/40 bg-white px-5 py-3 shadow-sm dark:border-[#59465F] dark:bg-[#39243F]">
+            <p className="text-2xl font-extrabold text-[#39243F] dark:text-[#D6B98C]">
+              ৳{studio.hourlyRate}
+              <span className="ml-1 text-sm font-medium text-[#766B7D] dark:text-[#C6B8CB]">
+                / hour
+              </span>
+            </p>
+          </div>
         </div>
 
         <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_360px]">
-          <div className="space-y-10">
+          {/* Main content */}
+          <div className="min-w-0 space-y-10">
             {/* Studio image */}
-            <div className="overflow-hidden rounded-2xl border border-white/10">
-              <img
-                src={studio.imageUrl}
-                alt={studio.title}
-                className="h-[280px] w-full object-cover sm:h-[460px]"
-              />
+            <div className="overflow-hidden rounded-2xl border border-[#E8DCCB] bg-white shadow-lg shadow-[#211629]/5 dark:border-[#59465F] dark:bg-[#39243F]">
+              {studio.imageUrl ? (
+                <img
+                  src={studio.imageUrl}
+                  alt={studio.title}
+                  className="h-[280px] w-full object-cover sm:h-[460px]"
+                />
+              ) : (
+                <div className="flex h-[280px] items-center justify-center bg-[#E8DCCB]/50 text-[#766B7D] dark:bg-[#39243F] dark:text-[#C6B8CB] sm:h-[460px]">
+                  <div className="text-center">
+                    <Monitor className="mx-auto mb-3 h-10 w-10 text-[#A78BBA]" />
+                    <p>No studio image available</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Description */}
             <section>
-              <h2 className="text-xl font-semibold">
-                About this workspace
-              </h2>
+              <div className="mb-4 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#D6B98C]/20 text-[#80613D] dark:text-[#D6B98C]">
+                  <Monitor className="h-5 w-5" />
+                </div>
 
-              <p className="mt-4 leading-7 text-neutral-400">
+                <h2 className="text-xl font-bold text-[#211629] dark:text-[#F7F1E8]">
+                  About this workspace
+                </h2>
+              </div>
+
+              <p className="text-sm leading-8 text-[#766B7D] dark:text-[#C6B8CB] sm:text-base">
                 {studio.description}
               </p>
             </section>
 
             {/* Specifications */}
             <section>
-              <h2 className="text-xl font-semibold">
+              <h2 className="text-xl font-bold text-[#211629] dark:text-[#F7F1E8]">
                 Workspace specifications
               </h2>
 
-              <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
-                <div className="rounded-xl border border-white/10 p-4">
-                  <p className="text-sm text-neutral-400">
+              <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="rounded-2xl border border-[#E8DCCB] bg-white p-5 transition hover:-translate-y-1 hover:shadow-lg hover:shadow-[#211629]/5 dark:border-[#59465F] dark:bg-[#39243F]">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#A78BBA]/15 text-[#80618F] dark:text-[#D6B98C]">
+                    <Users className="h-5 w-5" />
+                  </div>
+
+                  <p className="mt-4 text-sm text-[#766B7D] dark:text-[#C6B8CB]">
                     Capacity
                   </p>
-                  <p className="mt-2 font-semibold">
+
+                  <p className="mt-1 text-lg font-bold text-[#211629] dark:text-[#F7F1E8]">
                     {studio.capacity} people
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-white/10 p-4">
-                  <p className="text-sm text-neutral-400">
+                <div className="rounded-2xl border border-[#E8DCCB] bg-white p-5 transition hover:-translate-y-1 hover:shadow-lg hover:shadow-[#211629]/5 dark:border-[#59465F] dark:bg-[#39243F]">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#D6B98C]/20 text-[#80613D] dark:text-[#D6B98C]">
+                    <Wallet className="h-5 w-5" />
+                  </div>
+
+                  <p className="mt-4 text-sm text-[#766B7D] dark:text-[#C6B8CB]">
                     Hourly rate
                   </p>
-                  <p className="mt-2 font-semibold">
+
+                  <p className="mt-1 text-lg font-bold text-[#211629] dark:text-[#F7F1E8]">
                     ৳{studio.hourlyRate}
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-white/10 p-4">
-                  <p className="text-sm text-neutral-400">
-                    Deposit
+                <div className="rounded-2xl border border-[#E8DCCB] bg-white p-5 transition hover:-translate-y-1 hover:shadow-lg hover:shadow-[#211629]/5 dark:border-[#59465F] dark:bg-[#39243F]">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#A78BBA]/15 text-[#80618F] dark:text-[#D6B98C]">
+                    <Wallet className="h-5 w-5" />
+                  </div>
+
+                  <p className="mt-4 text-sm text-[#766B7D] dark:text-[#C6B8CB]">
+                    Security deposit
                   </p>
-                  <p className="mt-2 font-semibold">
+
+                  <p className="mt-1 text-lg font-bold text-[#211629] dark:text-[#F7F1E8]">
                     ৳{studio.deposit}
                   </p>
                 </div>
@@ -163,42 +207,46 @@ async function StudioDetails({
 
             {/* Amenities */}
             <section>
-              <h2 className="text-xl font-semibold">
-                Amenities
+              <h2 className="text-xl font-bold text-[#211629] dark:text-[#F7F1E8]">
+                Amenities & equipment
               </h2>
 
-              <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {studio.amenities.map((amenity) => (
-                  <div
-                    key={amenity}
-                    className="rounded-xl border border-white/10 px-4 py-3 text-neutral-300"
-                  >
-                    <span className="mr-2 text-violet-400">
-                      ✓
-                    </span>
-                    {amenity}
-                  </div>
-                ))}
-              </div>
+              {studio.amenities?.length > 0 ? (
+                <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {studio.amenities.map((amenity) => (
+                    <div
+                      key={amenity}
+                      className="flex items-center gap-3 rounded-xl border border-[#E8DCCB] bg-white px-4 py-3 text-sm text-[#766B7D] transition hover:border-[#D6B98C] dark:border-[#59465F] dark:bg-[#39243F] dark:text-[#C6B8CB]"
+                    >
+                      <CheckCircle2 className="h-4 w-4 shrink-0 text-[#A78BBA]" />
+                      {amenity}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="mt-4 text-sm text-[#766B7D] dark:text-[#C6B8CB]">
+                  No amenities listed yet.
+                </p>
+              )}
             </section>
 
             {/* Host details */}
             <section>
-              <h2 className="text-xl font-semibold">
+              <h2 className="text-xl font-bold text-[#211629] dark:text-[#F7F1E8]">
                 Your host
               </h2>
 
-              <div className="mt-4 flex items-center gap-4 rounded-2xl border border-white/10 p-5">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-violet-500/20 text-xl font-bold text-violet-300">
+              <div className="mt-5 flex items-center gap-4 rounded-2xl border border-[#E8DCCB] bg-white p-5 dark:border-[#59465F] dark:bg-[#39243F]">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#39243F] to-[#A78BBA] text-xl font-bold text-[#F7F1E8] shadow-md">
                   {studio.host?.name?.charAt(0).toUpperCase() ?? "H"}
                 </div>
 
                 <div>
-                  <p className="font-semibold">
+                  <p className="font-bold text-[#211629] dark:text-[#F7F1E8]">
                     {studio.host?.name ?? "Studio host"}
                   </p>
 
-                  <p className="mt-1 text-sm text-neutral-400">
+                  <p className="mt-1 text-sm text-[#766B7D] dark:text-[#C6B8CB]">
                     Workspace host
                   </p>
                 </div>
@@ -207,18 +255,22 @@ async function StudioDetails({
 
             {/* Reviews */}
             <section>
-              <h2 className="text-xl font-semibold">
-                Reviews
-              </h2>
+              <div className="flex items-center gap-3">
+                <Star className="h-5 w-5 text-[#D6B98C]" />
 
-              <p className="mt-3 text-neutral-400">
+                <h2 className="text-xl font-bold text-[#211629] dark:text-[#F7F1E8]">
+                  Reviews
+                </h2>
+              </div>
+
+              <p className="mt-3 text-sm text-[#766B7D] dark:text-[#C6B8CB]">
                 No reviews available yet.
               </p>
             </section>
           </div>
 
           {/* Booking card */}
-          <aside className="h-fit rounded-2xl border border-white/10 bg-white/[0.04] p-6 lg:sticky lg:top-24">
+          <aside className="h-fit rounded-2xl border border-[#E8DCCB] bg-white p-6 shadow-xl shadow-[#211629]/5 dark:border-[#59465F] dark:bg-[#39243F] lg:sticky lg:top-24">
             <StudioBookingCard studio={studio} />
           </aside>
         </div>
@@ -229,24 +281,30 @@ async function StudioDetails({
 
 function StudioDetailsLoading() {
   return (
-    <main className="min-h-screen bg-neutral-950 px-4 py-10 text-white sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl animate-pulse">
-        <div className="h-5 w-36 rounded bg-neutral-800" />
+    <main className="relative min-h-screen overflow-hidden bg-[#F7F1E8] px-4 py-10 dark:bg-[#211629] sm:px-6 lg:px-8">
+      {/* Background glow */}
+      <div className="pointer-events-none absolute -right-40 top-10 h-96 w-96 rounded-full bg-[#D6B98C]/20 blur-3xl dark:bg-[#A78BBA]/10" />
+      <div className="pointer-events-none absolute -left-40 bottom-0 h-80 w-80 rounded-full bg-[#A78BBA]/15 blur-3xl dark:bg-[#39243F]/60" />
 
-        <div className="mt-5 h-10 w-72 max-w-full rounded bg-neutral-800" />
+      <div className="relative mx-auto max-w-7xl animate-pulse">
+        {/* Header skeleton */}
+        <div className="h-7 w-36 rounded-full bg-[#E8DCCB] dark:bg-[#39243F]" />
 
-        <div className="mt-4 h-5 w-48 rounded bg-neutral-800" />
+        <div className="mt-5 h-10 w-72 max-w-full rounded-xl bg-[#E8DCCB] dark:bg-[#39243F]" />
 
+        <div className="mt-4 h-5 w-48 rounded-lg bg-[#E8DCCB] dark:bg-[#39243F]" />
+
+        {/* Content skeleton */}
         <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_360px]">
           <div>
-            <div className="h-[280px] rounded-2xl bg-neutral-800 sm:h-[460px]" />
+            <div className="h-[280px] rounded-2xl bg-[#E8DCCB] dark:bg-[#39243F] sm:h-[460px]" />
 
-            <div className="mt-8 h-24 rounded-xl bg-neutral-800" />
+            <div className="mt-8 h-24 rounded-xl bg-[#E8DCCB] dark:bg-[#39243F]" />
 
-            <div className="mt-8 h-32 rounded-xl bg-neutral-800" />
+            <div className="mt-8 h-32 rounded-xl bg-[#E8DCCB] dark:bg-[#39243F]" />
           </div>
 
-          <div className="h-72 rounded-2xl bg-neutral-800" />
+          <div className="h-72 rounded-2xl bg-[#E8DCCB] dark:bg-[#39243F]" />
         </div>
       </div>
     </main>

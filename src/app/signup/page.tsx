@@ -1,3 +1,4 @@
+
 "use client";
 
 import { authClient } from "@/lib/auth-client";
@@ -127,24 +128,28 @@ const SignUpPage = () => {
     `flex items-center gap-2 text-xs transition-colors ${
       isValid
         ? "text-emerald-600 dark:text-emerald-400"
-        : "text-gray-500 dark:text-neutral-400"
+        : "text-[#897D8E] dark:text-[#B9AABD]"
     }`;
 
   const inputClass =
-    "h-11 w-full rounded-lg border border-gray-200 bg-white px-4 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-violet-600 focus:ring-2 focus:ring-violet-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-violet-500 dark:focus:ring-violet-500/20";
+    "h-11 w-full rounded-lg border border-[#D6B98C]/40 bg-[#FFFDFA] px-4 text-sm text-[#211629] outline-none transition placeholder:text-[#A69AA8] focus:border-[#A78BBA] focus:ring-2 focus:ring-[#A78BBA]/20 dark:border-[#A78BBA]/25 dark:bg-[#211629] dark:text-[#F7F1E8] dark:placeholder:text-[#887990] dark:focus:border-[#D6B98C] dark:focus:ring-[#D6B98C]/15";
 
   const visibilityButtonClass =
-    "absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 transition hover:text-gray-800 dark:text-neutral-400 dark:hover:text-white";
+    "absolute right-3 top-1/2 -translate-y-1/2 text-[#897D8E] transition hover:text-[#39243F] dark:text-[#B9AABD] dark:hover:text-[#D6B98C]";
 
   const labelClass =
-    "mb-2 block text-sm font-medium text-gray-700 dark:text-neutral-300";
+    "mb-2 block text-sm font-medium text-[#39243F] dark:text-[#E6DCE9]";
 
   const socialButtonClass =
-    "flex h-10 items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-violet-500/30 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700";
+    "flex h-11 items-center justify-center gap-2 rounded-lg border border-[#D6B98C]/40 bg-[#FFFDFA] text-sm font-medium text-[#39243F] transition hover:border-[#A78BBA] hover:bg-[#F7F1E8] focus:outline-none focus:ring-2 focus:ring-[#A78BBA]/30 dark:border-[#A78BBA]/25 dark:bg-[#211629] dark:text-[#F7F1E8] dark:hover:border-[#D6B98C]/60 dark:hover:bg-[#39243F]";
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-10 text-gray-900 transition-colors duration-300 dark:bg-neutral-950 dark:text-neutral-100">
-      <div className="w-full max-w-md">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#F7F1E8] px-4 py-10 text-[#211629] transition-colors duration-300 dark:bg-[#211629] dark:text-[#F7F1E8]">
+      {/* Decorative background */}
+      <div className="pointer-events-none absolute -left-32 top-10 h-80 w-80 rounded-full bg-[#A78BBA]/15 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-32 -right-24 h-96 w-96 rounded-full bg-[#D6B98C]/15 blur-3xl" />
+
+      <div className="relative w-full max-w-md">
         {/* StudioSpace branding */}
         <div className="mb-7 text-center">
           <button
@@ -153,29 +158,29 @@ const SignUpPage = () => {
             className="mb-5 inline-flex items-center justify-center gap-2"
             aria-label="StudioSpace home"
           >
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-600 text-white shadow-lg shadow-violet-200/60 dark:shadow-violet-950/40">
+            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#39243F] text-[#D6B98C] shadow-lg shadow-[#211629]/15 dark:bg-[#D6B98C] dark:text-[#211629]">
               <Sparkles size={24} />
             </span>
 
-            <span className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            <span className="text-2xl font-bold tracking-tight text-[#211629] dark:text-[#F7F1E8]">
               Studio
-              <span className="text-violet-600 dark:text-violet-400">
+              <span className="text-[#8C6D9B] dark:text-[#D6B98C]">
                 Space
               </span>
             </span>
           </button>
 
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+          <h1 className="text-3xl font-bold tracking-tight text-[#211629] dark:text-[#F7F1E8]">
             Create your account
           </h1>
 
-          <p className="mt-2 text-sm leading-6 text-gray-500 dark:text-neutral-400">
+          <p className="mt-2 text-sm leading-6 text-[#786D7A] dark:text-[#C5B9CA]">
             Join StudioSpace and discover spaces for your next creative project.
           </p>
         </div>
 
         {/* Signup card */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-colors duration-300 dark:border-neutral-800 dark:bg-neutral-900 sm:p-7">
+        <div className="rounded-2xl border border-[#D6B98C]/40 bg-white/90 p-6 shadow-xl shadow-[#211629]/5 backdrop-blur-sm transition-colors duration-300 dark:border-[#A78BBA]/20 dark:bg-[#39243F]/80 sm:p-7">
           {loading ? (
             <SignupSkeleton />
           ) : (
@@ -257,9 +262,9 @@ const SignUpPage = () => {
                 {/* Live password requirements */}
                 <div
                   id="password-requirements"
-                  className="mt-3 rounded-lg border border-gray-100 bg-gray-50 p-3 transition-colors dark:border-neutral-800 dark:bg-neutral-800/70"
+                  className="mt-3 rounded-lg border border-[#D6B98C]/25 bg-[#F7F1E8]/80 p-3 transition-colors dark:border-[#A78BBA]/20 dark:bg-[#211629]/70"
                 >
-                  <p className="mb-2 text-xs font-semibold text-gray-700 dark:text-neutral-300">
+                  <p className="mb-2 text-xs font-semibold text-[#39243F] dark:text-[#E6DCE9]">
                     Your password must contain:
                   </p>
 
@@ -296,10 +301,7 @@ const SignUpPage = () => {
 
               {/* Confirm password */}
               <div>
-                <label
-                  htmlFor="confirmPassword"
-                  className={labelClass}
-                >
+                <label htmlFor="confirmPassword" className={labelClass}>
                   Confirm password
                 </label>
 
@@ -340,7 +342,7 @@ const SignUpPage = () => {
               {errorMessage && (
                 <div
                   role="alert"
-                  className="rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300"
+                  className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300"
                 >
                   {errorMessage}
                 </div>
@@ -350,7 +352,7 @@ const SignUpPage = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="h-11 w-full rounded-lg bg-violet-600 font-semibold text-white transition duration-200 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60 dark:focus:ring-offset-neutral-900"
+                className="h-11 w-full rounded-lg bg-[#39243F] font-semibold text-[#F7F1E8] shadow-md shadow-[#211629]/10 transition duration-200 hover:bg-[#4B3153] focus:outline-none focus:ring-2 focus:ring-[#A78BBA] focus:ring-offset-2 focus:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60 dark:bg-[#D6B98C] dark:text-[#211629] dark:hover:bg-[#E5CCA6] dark:focus:ring-offset-[#39243F]"
               >
                 Create account
               </button>
@@ -359,11 +361,11 @@ const SignUpPage = () => {
 
           {/* Divider */}
           <div className="my-5 flex items-center gap-4">
-            <div className="h-px flex-1 bg-gray-200 dark:bg-neutral-700" />
-            <span className="text-xs text-gray-400 dark:text-neutral-500">
+            <div className="h-px flex-1 bg-[#D6B98C]/40 dark:bg-[#A78BBA]/25" />
+            <span className="text-xs font-medium tracking-wider text-[#9A8D9C] dark:text-[#B9AABD]">
               OR SIGN UP WITH
             </span>
-            <div className="h-px flex-1 bg-gray-200 dark:bg-neutral-700" />
+            <div className="h-px flex-1 bg-[#D6B98C]/40 dark:bg-[#A78BBA]/25" />
           </div>
 
           {/* Social signup */}
@@ -395,12 +397,12 @@ const SignUpPage = () => {
           </div>
 
           {/* Login link */}
-          <p className="mt-6 text-center text-sm text-gray-500 dark:text-neutral-400">
+          <p className="mt-6 text-center text-sm text-[#786D7A] dark:text-[#C5B9CA]">
             Already have an account?{" "}
             <button
               type="button"
               onClick={() => router.push("/login")}
-              className="font-semibold text-violet-600 transition hover:text-violet-700 dark:text-violet-400 dark:hover:text-violet-300"
+              className="font-semibold text-[#72517F] transition hover:text-[#39243F] dark:text-[#D6B98C] dark:hover:text-[#E5CCA6]"
             >
               Sign in
             </button>
@@ -411,12 +413,12 @@ const SignUpPage = () => {
         <button
           type="button"
           onClick={() => router.push("/")}
-          className="mx-auto mt-5 block text-sm text-gray-400 transition hover:text-gray-600 dark:text-neutral-500 dark:hover:text-neutral-300"
+          className="mx-auto mt-5 block text-sm text-[#978A99] transition hover:text-[#39243F] dark:text-[#B9AABD] dark:hover:text-[#D6B98C]"
         >
           &larr; Back to StudioSpace
         </button>
 
-        <p className="mt-6 text-center text-xs text-gray-400 dark:text-neutral-500">
+        <p className="mt-6 text-center text-xs text-[#978A99] dark:text-[#AFA1B5]">
           Find your space. Create something extraordinary.
         </p>
       </div>

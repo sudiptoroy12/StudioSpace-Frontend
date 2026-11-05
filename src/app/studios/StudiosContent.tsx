@@ -42,8 +42,6 @@ const categories = [
   { label: "Art Workshop", value: "art-workshops" },
 ];
 
-
-
 const sortOptions = [
   { label: "Newest Listings", value: "newest" },
   { label: "Price: Low to High", value: "price-asc" },
@@ -55,9 +53,10 @@ export default function StudiosPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-const [studios, setStudios] = useState<Studio[]>([]);
-const [isLoading, setIsLoading] = useState(true);
-const [fetchError, setFetchError] = useState("");
+
+  const [studios, setStudios] = useState<Studio[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState("");
   const [search, setSearch] = useState("");
 
   const [sort, setSort] = useState("newest");
@@ -68,144 +67,192 @@ const [fetchError, setFetchError] = useState("");
   const [favorites, setFavorites] = useState<string[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
 
+  const validCategories = categories.map((item) => item.value);
+  const requestedCategory = searchParams.get("category") ?? "all";
 
-const validCategories = categories.map((item) => item.value);
+  const category = validCategories.includes(requestedCategory)
+    ? requestedCategory
+    : "all";
 
-const requestedCategory = searchParams.get("category") ?? "all";
-
-const category = validCategories.includes(requestedCategory)
-  ? requestedCategory
-  : "all";
-
-
-
+  // Fetch studios
   useEffect(() => {
     const controller = new AbortController();
 
-  async function fetchStudios() {
-    try {
-      setIsLoading(true);
-      setFetchError("");
+    async function fetchStudios() {
+      try {
+        setIsLoading(true);
+        setFetchError("");
 
-      const API_URL = process.env.NEXT_PUBLIC_API_URL;
+        const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-      if (!API_URL) {
-        throw new Error("API URL is not configured.");
-      }
+        if (!API_URL) {
+          throw new Error("API URL is not configured.");
+        }
 
-      const response = await fetch(`${API_URL}/studios`, { signal: controller.signal });
+        const response = await fetch(`${API_URL}/studios`, {
+          signal: controller.signal,
+        });
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch studios.");
-      }
+        if (!response.ok) {
+          throw new Error("Failed to fetch studios.");
+        }
 
-     
-const responseData = await response.json();
-console.log("API response:", responseData);
-console.log("API URL:", API_URL);
+        const responseData = await response.json();
 
-// Support both an array response and { data: [...] } / { studios: [...] }.
-const data = Array.isArray(responseData)
-  ? responseData
-  : Array.isArray(responseData.data)
-    ? responseData.data
-    : Array.isArray(responseData.studios)
-      ? responseData.studios
-      : [];
+        const data = Array.isArray(responseData)
+          ? responseData
+          : Array.isArray(responseData.data)
+            ? responseData.data
+            : Array.isArray(responseData.studios)
+              ? responseData.studios
+              : [];
 
-const categoryConfig: Record<string, { slug: string; label: string }> = {
-  "photo studio": { slug: "photo-studios", label: "Photo Studio" },
-  "photo studios": { slug: "photo-studios", label: "Photo Studio" },
-  "photo-studios": { slug: "photo-studios", label: "Photo Studio" },
+        const categoryConfig: Record<
+          string,
+          { slug: string; label: string }
+        > = {
+          "photo studio": {
+            slug: "photo-studios",
+            label: "Photo Studio",
+          },
+          "photo studios": {
+            slug: "photo-studios",
+            label: "Photo Studio",
+          },
+          "photo-studios": {
+            slug: "photo-studios",
+            label: "Photo Studio",
+          },
 
-  "film stage": { slug: "sound-stages", label: "Film Stage" },
-  "film stages": { slug: "sound-stages", label: "Film Stage" },
-  "sound stage": { slug: "sound-stages", label: "Film Stage" },
-  "sound stages": { slug: "sound-stages", label: "Film Stage" },
-  "sound-stages": { slug: "sound-stages", label: "Film Stage" },
+          "film stage": {
+            slug: "sound-stages",
+            label: "Film Stage",
+          },
+          "film stages": {
+            slug: "sound-stages",
+            label: "Film Stage",
+          },
+          "sound stage": {
+            slug: "sound-stages",
+            label: "Film Stage",
+          },
+          "sound stages": {
+            slug: "sound-stages",
+            label: "Film Stage",
+          },
+          "sound-stages": {
+            slug: "sound-stages",
+            label: "Film Stage",
+          },
 
-  "podcast room": { slug: "podcast-rooms", label: "Podcast Room" },
-  "podcast rooms": { slug: "podcast-rooms", label: "Podcast Room" },
-  "podcast-rooms": { slug: "podcast-rooms", label: "Podcast Room" },
+          "podcast room": {
+            slug: "podcast-rooms",
+            label: "Podcast Room",
+          },
+          "podcast rooms": {
+            slug: "podcast-rooms",
+            label: "Podcast Room",
+          },
+          "podcast-rooms": {
+            slug: "podcast-rooms",
+            label: "Podcast Room",
+          },
 
-  "music suite": { slug: "music-suites", label: "Music Suite" },
-  "music suites": { slug: "music-suites", label: "Music Suite" },
-  "music-suites": { slug: "music-suites", label: "Music Suite" },
+          "music suite": {
+            slug: "music-suites",
+            label: "Music Suite",
+          },
+          "music suites": {
+            slug: "music-suites",
+            label: "Music Suite",
+          },
+          "music-suites": {
+            slug: "music-suites",
+            label: "Music Suite",
+          },
 
-  "art workshop": { slug: "art-workshops", label: "Art Workshop" },
-  "art workshops": { slug: "art-workshops", label: "Art Workshop" },
-  "art-workshops": { slug: "art-workshops", label: "Art Workshop" },
-};
+          "art workshop": {
+            slug: "art-workshops",
+            label: "Art Workshop",
+          },
+          "art workshops": {
+            slug: "art-workshops",
+            label: "Art Workshop",
+          },
+          "art-workshops": {
+            slug: "art-workshops",
+            label: "Art Workshop",
+          },
+        };
 
-const mappedStudios: Studio[] = data.map(
-  (studio: {
-    _id?: string;
-    id?: string;
-    title?: string;
-    category?: string;
-    location?: string;
-    description?: string;
-    hourlyRate?: number | string;
-    capacity?: number | string;
-    deposit?: number | string;
-    imageUrl?: string;
-    createdAt?: string | number;
-    rating?: number | string;
-  }) => {
-    const rawCategory = String(studio.category ?? "")
-      .trim()
-      .toLowerCase()
-      .replace(/_/g, "-");
+        const mappedStudios: Studio[] = data.map(
+          (studio: {
+            _id?: string;
+            id?: string;
+            title?: string;
+            category?: string;
+            location?: string;
+            description?: string;
+            hourlyRate?: number | string;
+            capacity?: number | string;
+            deposit?: number | string;
+            imageUrl?: string;
+            createdAt?: string | number;
+            rating?: number | string;
+          }) => {
+            const rawCategory = String(studio.category ?? "")
+              .trim()
+              .toLowerCase()
+              .replace(/_/g, "-");
 
-    const normalizedCategory = categoryConfig[rawCategory] ?? {
-      slug: rawCategory,
-      label: studio.category ?? "Other",
-    };
+            const normalizedCategory = categoryConfig[rawCategory] ?? {
+              slug: rawCategory,
+              label: studio.category ?? "Other",
+            };
 
-    return {
-      id: String(studio._id ?? studio.id ?? ""),
-      title: studio.title ?? "Untitled Studio",
-      category: normalizedCategory.label,
-      categorySlug: normalizedCategory.slug,
-      location: studio.location ?? "Location unavailable",
-      description: studio.description ?? "",
-      price: Number(studio.hourlyRate ?? 0),
-      rating: Number(studio.rating ?? 0),
-      capacity: Number(studio.capacity ?? 0),
-      deposit: Number(studio.deposit ?? 0),
-      image: studio.imageUrl || "/images/studio-placeholder.png",
-      createdAt: studio.createdAt
-        ? new Date(studio.createdAt).getTime()
-        : 0,
-    };
-  },
-);
+            return {
+              id: String(studio._id ?? studio.id ?? ""),
+              title: studio.title ?? "Untitled Studio",
+              category: normalizedCategory.label,
+              categorySlug: normalizedCategory.slug,
+              location: studio.location ?? "Location unavailable",
+              description: studio.description ?? "",
+              price: Number(studio.hourlyRate ?? 0),
+              rating: Number(studio.rating ?? 0),
+              capacity: Number(studio.capacity ?? 0),
+              deposit: Number(studio.deposit ?? 0),
+              image: studio.imageUrl || "/images/studio-placeholder.png",
+              createdAt: studio.createdAt
+                ? new Date(studio.createdAt).getTime()
+                : 0,
+            };
+          }
+        );
 
-setStudios(mappedStudios);
+        setStudios(mappedStudios);
+      } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") {
+          return;
+        }
 
-    } catch (error) {
-      if (error instanceof Error && error.name === "AbortError") {
-        return;
-      }
-
-      setFetchError(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong while loading studios.",
-      );
-    } finally {
-      if (!controller.signal.aborted) {
-        setIsLoading(false);
+        setFetchError(
+          error instanceof Error
+            ? error.message
+            : "Something went wrong while loading studios."
+        );
+      } finally {
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
       }
     }
-  }
 
-  void fetchStudios();
+    void fetchStudios();
 
-  return () => controller.abort();
-}, []);
+    return () => controller.abort();
+  }, []);
 
-
+  // Filter and sort studios
   const filteredStudios = useMemo(() => {
     const query = search.trim().toLowerCase();
 
@@ -263,21 +310,21 @@ setStudios(mappedStudios);
     favorites,
   ]);
 
-function selectCategory(value: string) {
-  const params = new URLSearchParams(searchParams.toString());
+  function selectCategory(value: string) {
+    const params = new URLSearchParams(searchParams.toString());
 
-  if (value === "all") {
-    params.delete("category");
-  } else {
-    params.set("category", value);
+    if (value === "all") {
+      params.delete("category");
+    } else {
+      params.set("category", value);
+    }
+
+    const query = params.toString();
+
+    router.replace(query ? `${pathname}?${query}` : pathname, {
+      scroll: false,
+    });
   }
-
-  const query = params.toString();
-
-  router.replace(query ? `${pathname}?${query}` : pathname, {
-    scroll: false,
-  });
-}
 
   function resetFilters() {
     setSearch("");
@@ -294,7 +341,7 @@ function selectCategory(value: string) {
     setFavorites((current) =>
       current.includes(id)
         ? current.filter((favorite) => favorite !== id)
-        : [...current, id],
+        : [...current, id]
     );
   }
 
@@ -314,33 +361,39 @@ function selectCategory(value: string) {
     setAppliedMax(max);
   }
 
+  const inputClass =
+    "h-11 w-full rounded-xl border border-[#D6B98C]/40 bg-[#FFFDFA] text-sm text-[#211629] outline-none transition placeholder:text-[#A69AA8] focus:border-[#A78BBA] focus:ring-2 focus:ring-[#A78BBA]/20 dark:border-[#A78BBA]/25 dark:bg-[#211629] dark:text-[#F7F1E8] dark:placeholder:text-[#887990] dark:focus:border-[#D6B98C] dark:focus:ring-[#D6B98C]/15";
+
+  const secondaryButtonClass =
+    "bg-[#F1EAF2] text-[#72517F] hover:bg-[#E8DCEB] dark:bg-[#211629] dark:text-[#D6B98C] dark:hover:bg-[#4B3153]";
+
   return (
-    <main className="min-h-screen bg-[#faf9f7] px-4 pb-16 pt-8 text-neutral-900 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
+    <main className="min-h-screen bg-[#F7F1E8] px-4 pb-16 pt-8 text-[#211629] transition-colors duration-300 dark:bg-[#211629] dark:text-[#F7F1E8] sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Page heading */}
         <div className="mb-8 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
           <div>
             <Link
               href="/"
-              className="mb-3 inline-flex items-center gap-2 text-sm text-neutral-500 transition hover:text-neutral-900"
+              className="mb-3 inline-flex items-center gap-2 text-sm text-[#897D8E] transition hover:text-[#39243F] dark:text-[#B9AABD] dark:hover:text-[#D6B98C]"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to home
             </Link>
 
-            <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
+            <h1 className="text-3xl font-extrabold tracking-tight text-[#211629] dark:text-[#F7F1E8] sm:text-4xl">
               Explore Creative Studios
             </h1>
 
-            <p className="mt-2 text-sm text-neutral-500 sm:text-base">
+            <p className="mt-2 text-sm text-[#786D7A] dark:text-[#C5B9CA] sm:text-base">
               Discover sound stages, photography cycloramas, podcast hubs, and
               mixing rooms
             </p>
           </div>
 
-          <p className="text-sm text-neutral-500">
+          <p className="text-sm text-[#897D8E] dark:text-[#B9AABD]">
             Showing{" "}
-            <span className="font-semibold text-neutral-900">
+            <span className="font-semibold text-[#39243F] dark:text-[#D6B98C]">
               {filteredStudios.length}
             </span>{" "}
             creative spaces
@@ -348,13 +401,13 @@ function selectCategory(value: string) {
         </div>
 
         {/* Search and filters */}
-        <section className="mb-8 rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm sm:p-5">
+        <section className="mb-8 rounded-2xl border border-[#D6B98C]/40 bg-white/85 p-4 shadow-sm transition-colors duration-300 dark:border-[#A78BBA]/20 dark:bg-[#39243F]/75 sm:p-5">
           <form
             onSubmit={(event) => event.preventDefault()}
             className="flex flex-col gap-3 lg:flex-row"
           >
             <div className="relative min-w-0 flex-1">
-              <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
+              <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A69AA8]" />
 
               <input
                 type="search"
@@ -362,25 +415,25 @@ function selectCategory(value: string) {
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search studios by title, equipment, city..."
                 aria-label="Search studios"
-                className="h-11 w-full rounded-xl border border-neutral-200 bg-neutral-50 pl-11 pr-4 text-sm outline-none transition placeholder:text-neutral-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-100"
+                className={`${inputClass} bg-[#F7F1E8]/70 pl-11 pr-4 dark:bg-[#211629]`}
               />
             </div>
 
             <button
               type="submit"
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-amber-500 px-6 text-sm font-bold text-neutral-950 transition hover:bg-amber-400"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#39243F] px-6 text-sm font-bold text-[#F7F1E8] transition hover:bg-[#4B3153] dark:bg-[#D6B98C] dark:text-[#211629] dark:hover:bg-[#E5CCA6]"
             >
               Search
             </button>
 
             <div className="relative">
-              <ArrowDownUp className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+              <ArrowDownUp className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#897D8E] dark:text-[#B9AABD]" />
 
               <select
                 value={sort}
                 onChange={(event) => setSort(event.target.value)}
                 aria-label="Sort studios"
-                className="h-11 w-full appearance-none rounded-xl border border-neutral-200 bg-white py-2 pl-9 pr-8 text-sm outline-none focus:border-amber-400 sm:min-w-[205px]"
+                className={`${inputClass} appearance-none py-2 pl-9 pr-8 sm:min-w-[205px]`}
               >
                 {sortOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -391,12 +444,12 @@ function selectCategory(value: string) {
             </div>
           </form>
 
-          <div className="my-4 border-t border-neutral-100" />
+          <div className="my-4 border-t border-[#D6B98C]/30 dark:border-[#A78BBA]/20" />
 
           <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
             {/* Category filter */}
             <div className="flex flex-wrap items-center gap-2">
-              <span className="mr-1 inline-flex items-center gap-1.5 text-xs font-medium text-neutral-500">
+              <span className="mr-1 inline-flex items-center gap-1.5 text-xs font-medium text-[#897D8E] dark:text-[#B9AABD]">
                 <SlidersHorizontal className="h-3.5 w-3.5" />
                 Category:
               </span>
@@ -405,8 +458,8 @@ function selectCategory(value: string) {
                 onClick={() => selectCategory("all")}
                 className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
                   category === "all"
-                    ? "bg-amber-500 text-neutral-950 shadow-sm"
-                    : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
+                    ? "bg-[#39243F] text-[#F7F1E8] shadow-sm dark:bg-[#D6B98C] dark:text-[#211629]"
+                    : secondaryButtonClass
                 }`}
               >
                 All
@@ -418,8 +471,8 @@ function selectCategory(value: string) {
                   onClick={() => selectCategory(item.value)}
                   className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
                     category === item.value
-                      ? "bg-amber-500 text-neutral-950 shadow-sm"
-                      : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
+                      ? "bg-[#39243F] text-[#F7F1E8] shadow-sm dark:bg-[#D6B98C] dark:text-[#211629]"
+                      : secondaryButtonClass
                   }`}
                 >
                   {item.label}
@@ -435,7 +488,7 @@ function selectCategory(value: string) {
               }}
               className="flex flex-wrap items-center gap-2"
             >
-              <span className="mr-1 text-xs font-medium text-neutral-500">
+              <span className="mr-1 text-xs font-medium text-[#897D8E] dark:text-[#B9AABD]">
                 Rate:
               </span>
 
@@ -446,10 +499,10 @@ function selectCategory(value: string) {
                 onChange={(event) => setMinPrice(event.target.value)}
                 placeholder="Min $"
                 aria-label="Minimum hourly price"
-                className="h-9 w-20 rounded-lg border border-neutral-200 px-2 text-xs outline-none focus:border-amber-400"
+                className={`${inputClass} h-9 w-20 rounded-lg px-2 text-xs`}
               />
 
-              <span className="text-neutral-400">–</span>
+              <span className="text-[#A69AA8]">–</span>
 
               <input
                 type="number"
@@ -458,12 +511,12 @@ function selectCategory(value: string) {
                 onChange={(event) => setMaxPrice(event.target.value)}
                 placeholder="Max $"
                 aria-label="Maximum hourly price"
-                className="h-9 w-20 rounded-lg border border-neutral-200 px-2 text-xs outline-none focus:border-amber-400"
+                className={`${inputClass} h-9 w-20 rounded-lg px-2 text-xs`}
               />
 
               <button
                 type="submit"
-                className="h-9 rounded-lg bg-neutral-900 px-4 text-xs font-semibold text-white transition hover:bg-neutral-700"
+                className="h-9 rounded-lg bg-[#39243F] px-4 text-xs font-semibold text-[#F7F1E8] transition hover:bg-[#4B3153] dark:bg-[#D6B98C] dark:text-[#211629] dark:hover:bg-[#E5CCA6]"
               >
                 Apply
               </button>
@@ -473,71 +526,81 @@ function selectCategory(value: string) {
                 onClick={resetFilters}
                 aria-label="Reset all filters"
                 title="Reset filters"
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-900"
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-[#897D8E] transition hover:bg-[#F1EAF2] hover:text-[#39243F] dark:text-[#B9AABD] dark:hover:bg-[#211629] dark:hover:text-[#D6B98C]"
               >
                 <RotateCcw className="h-4 w-4" />
               </button>
             </form>
           </div>
 
-          <div className="mt-4 flex flex-wrap gap-2 border-t border-neutral-100 pt-4">
+          {/* Favorites filter */}
+          <div className="mt-4 flex flex-wrap gap-2 border-t border-[#D6B98C]/30 pt-4 dark:border-[#A78BBA]/20">
             <button
               onClick={() => setShowFavorites((current) => !current)}
+              aria-pressed={showFavorites}
               className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-xs font-semibold transition ${
                 showFavorites
-                  ? "border-rose-200 bg-rose-50 text-rose-600"
-                  : "border-neutral-200 text-neutral-500 hover:bg-neutral-50"
+                  ? "border-rose-300 bg-rose-50 text-rose-600 dark:border-rose-400/30 dark:bg-rose-950/30 dark:text-rose-300"
+                  : "border-[#D6B98C]/40 text-[#897D8E] hover:bg-[#F7F1E8] dark:border-[#A78BBA]/25 dark:text-[#B9AABD] dark:hover:bg-[#211629]"
               }`}
             >
               <Heart
-                className={`h-3.5 w-3.5 ${showFavorites ? "fill-current" : ""}`}
+                className={`h-3.5 w-3.5 ${
+                  showFavorites ? "fill-current" : ""
+                }`}
               />
               Favorites ({favorites.length})
             </button>
           </div>
         </section>
 
-      
         {/* Studio cards */}
-{isLoading ? (
-  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-    {[1, 2, 3].map((item) => (
-      <div
-        key={item}
-        className="h-96 animate-pulse rounded-2xl bg-neutral-200"
-      />
-    ))}
-  </div>
-) : fetchError ? (
-  <div className="rounded-2xl border border-red-200 bg-white px-6 py-12 text-center">
-    <h2 className="text-lg font-bold text-red-600">
-      Unable to load studios
-    </h2>
+        {isLoading ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {[1, 2, 3].map((item) => (
+              <div
+                key={item}
+                className="h-96 animate-pulse overflow-hidden rounded-2xl border border-[#D6B98C]/25 bg-white dark:border-[#A78BBA]/20 dark:bg-[#39243F]/70"
+              >
+                <div className="h-56 bg-[#E9DFD1] dark:bg-[#211629]" />
+                <div className="space-y-4 p-5">
+                  <div className="h-5 w-3/4 rounded bg-[#D6B98C]/30 dark:bg-[#59465F]" />
+                  <div className="h-4 w-1/2 rounded bg-[#E9DFD1] dark:bg-[#59465F]" />
+                  <div className="h-3 rounded bg-[#E9DFD1] dark:bg-[#59465F]" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : fetchError ? (
+          <div className="rounded-2xl border border-red-200 bg-white px-6 py-12 text-center dark:border-red-900/50 dark:bg-[#39243F]/70">
+            <h2 className="text-lg font-bold text-red-600 dark:text-red-400">
+              Unable to load studios
+            </h2>
 
-    <p className="mt-2 text-sm text-neutral-500">
-      {fetchError}
-    </p>
+            <p className="mt-2 text-sm text-[#786D7A] dark:text-[#C5B9CA]">
+              {fetchError}
+            </p>
 
-    <button
-      type="button"
-      onClick={() => window.location.reload()}
-      className="mt-4 rounded-xl bg-neutral-900 px-5 py-3 text-sm font-bold text-white"
-    >
-      Try again
-    </button>
-  </div>
-) : filteredStudios.length > 0 ? (
- <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="mt-4 rounded-xl bg-[#39243F] px-5 py-3 text-sm font-bold text-[#F7F1E8] transition hover:bg-[#4B3153] dark:bg-[#D6B98C] dark:text-[#211629] dark:hover:bg-[#E5CCA6]"
+            >
+              Try again
+            </button>
+          </div>
+        ) : filteredStudios.length > 0 ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {filteredStudios.map((studio) => {
               const isFavorite = favorites.includes(studio.id);
 
               return (
                 <article
                   key={studio.id}
-                  className="group overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-neutral-900/5"
+                  className="group overflow-hidden rounded-2xl border border-[#D6B98C]/35 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[#D6B98C] hover:shadow-xl hover:shadow-[#211629]/10 dark:border-[#A78BBA]/20 dark:bg-[#39243F]/70 dark:hover:border-[#D6B98C]/50 dark:hover:shadow-black/20"
                 >
                   {/* Image */}
-                  <div className="relative h-56 overflow-hidden bg-neutral-200 sm:h-60">
+                  <div className="relative h-56 overflow-hidden bg-[#E9DFD1] dark:bg-[#211629] sm:h-60">
                     <img
                       src={studio.image}
                       alt={studio.title}
@@ -545,9 +608,9 @@ function selectCategory(value: string) {
                       className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                     />
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
 
-                    <span className="absolute left-3 top-3 rounded-full border border-white/20 bg-violet-400/80 px-3 py-1.5 text-xs font-bold text-violet-950 shadow-sm backdrop-blur-md">
+                    <span className="absolute left-3 top-3 rounded-full border border-[#D6B98C]/50 bg-[#F7F1E8]/90 px-3 py-1.5 text-xs font-bold text-[#39243F] shadow-sm backdrop-blur-md dark:border-[#D6B98C]/40 dark:bg-[#211629]/85 dark:text-[#D6B98C]">
                       {studio.category}
                     </span>
 
@@ -566,60 +629,62 @@ function selectCategory(value: string) {
                       }`}
                     >
                       <Heart
-                        className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`}
+                        className={`h-4 w-4 ${
+                          isFavorite ? "fill-current" : ""
+                        }`}
                       />
                     </button>
 
-                    <div className="absolute bottom-3 left-3 rounded-lg bg-black/80 px-3 py-2 text-white">
-                      <span className="text-base font-extrabold text-amber-400">
+                    <div className="absolute bottom-3 left-3 rounded-lg bg-[#211629]/90 px-3 py-2 text-white backdrop-blur-sm">
+                      <span className="text-base font-extrabold text-[#D6B98C]">
                         ${studio.price}
                       </span>
-                      <span className="ml-1 text-xs text-neutral-200">
+                      <span className="ml-1 text-xs text-[#E6DCE9]">
                         / hr
                       </span>
                     </div>
 
-                    <div className="absolute bottom-3 right-3 flex items-center gap-1 rounded-lg bg-black/80 px-2.5 py-1.5 text-sm font-bold text-white">
-                      <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                    <div className="absolute bottom-3 right-3 flex items-center gap-1 rounded-lg bg-[#211629]/90 px-2.5 py-1.5 text-sm font-bold text-white backdrop-blur-sm">
+                      <Star className="h-3.5 w-3.5 fill-[#D6B98C] text-[#D6B98C]" />
                       {studio.rating.toFixed(1)}
                     </div>
                   </div>
 
                   {/* Card content */}
                   <div className="flex flex-col p-5">
-                    <div className="mb-2 flex items-start gap-2 text-xs text-neutral-500">
-                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+                    <div className="mb-2 flex items-start gap-2 text-xs text-[#897D8E] dark:text-[#B9AABD]">
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#A78BBA]" />
                       <span className="line-clamp-1">{studio.location}</span>
                     </div>
 
                     <h2
                       title={studio.title}
-                      className="mb-2 line-clamp-1 text-lg font-extrabold tracking-tight text-neutral-900 transition-colors group-hover:text-amber-700"
+                      className="mb-2 line-clamp-1 text-lg font-extrabold tracking-tight text-[#211629] transition-colors group-hover:text-[#72517F] dark:text-[#F7F1E8] dark:group-hover:text-[#D6B98C]"
                     >
                       {studio.title}
                     </h2>
 
-                    <p className="mb-5 line-clamp-2 min-h-10 text-sm leading-6 text-neutral-500">
+                    <p className="mb-5 line-clamp-2 min-h-10 text-sm leading-6 text-[#786D7A] dark:text-[#C5B9CA]">
                       {studio.description}
                     </p>
 
-                    <div className="mb-4 flex items-center justify-between gap-2 border-t border-neutral-100 pt-4 text-xs text-neutral-500">
+                    <div className="mb-4 flex items-center justify-between gap-2 border-t border-[#D6B98C]/30 pt-4 text-xs text-[#897D8E] dark:border-[#A78BBA]/20 dark:text-[#B9AABD]">
                       <span className="inline-flex items-center gap-1.5">
-                        <Users className="h-4 w-4 text-neutral-400" />
+                        <Users className="h-4 w-4 text-[#A78BBA]" />
                         Up to {studio.capacity} creators
                       </span>
 
-                      <span className="whitespace-nowrap text-neutral-400">
+                      <span className="whitespace-nowrap text-[#9A8D9C] dark:text-[#AFA1B5]">
                         Deposit: ${studio.deposit}
                       </span>
                     </div>
 
                     <Link
                       href={`/studios/${studio.id}`}
-                      className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-neutral-900 px-4 text-sm font-bold text-white transition hover:bg-amber-500 hover:text-neutral-950"
+                      className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#39243F] px-4 text-sm font-bold text-[#F7F1E8] transition hover:bg-[#D6B98C] hover:text-[#211629] dark:bg-[#D6B98C] dark:text-[#211629] dark:hover:bg-[#E5CCA6]"
                     >
                       View Details
-                      <ArrowRight className="h-4 w-4" />
+                      <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                     </Link>
                   </div>
                 </article>
@@ -627,21 +692,23 @@ function selectCategory(value: string) {
             })}
           </div>
         ) : (
-          <div className="rounded-2xl border border-dashed border-neutral-300 bg-white px-6 py-16 text-center">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-neutral-100">
-              <Search className="h-6 w-6 text-neutral-400" />
+          <div className="rounded-2xl border border-dashed border-[#D6B98C]/60 bg-white/70 px-6 py-16 text-center dark:border-[#A78BBA]/30 dark:bg-[#39243F]/50">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#F1EAF2] dark:bg-[#211629]">
+              <Search className="h-6 w-6 text-[#A78BBA]" />
             </div>
 
-            <h2 className="text-xl font-bold">No studios found</h2>
+            <h2 className="text-xl font-bold text-[#211629] dark:text-[#F7F1E8]">
+              No studios found
+            </h2>
 
-            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-neutral-500">
+            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[#786D7A] dark:text-[#C5B9CA]">
               Try another search term, choose a different category, or adjust
               your hourly price range.
             </p>
 
             <button
               onClick={resetFilters}
-              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-bold text-neutral-950 transition hover:bg-amber-400"
+              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#39243F] px-5 py-3 text-sm font-bold text-[#F7F1E8] transition hover:bg-[#D6B98C] hover:text-[#211629] dark:bg-[#D6B98C] dark:text-[#211629] dark:hover:bg-[#E5CCA6]"
             >
               <RotateCcw className="h-4 w-4" />
               Reset filters
